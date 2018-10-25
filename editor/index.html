@@ -23,7 +23,8 @@
 
 		<script src="../examples/js/libs/jszip.min.js"></script>
 		<script src="../examples/js/libs/inflate.min.js"></script> <!-- FBX -->
-
+		<script src="../examples/js/libs/stats.min.js"></script>
+		
 		<script src="../examples/js/loaders/AMFLoader.js"></script>
 		<script src="../examples/js/loaders/AWDLoader.js"></script>
 		<script src="../examples/js/loaders/BabylonLoader.js"></script>
@@ -47,12 +48,12 @@
 		<script src="../examples/js/loaders/ctm/lzma.js"></script>
 		<script src="../examples/js/loaders/ctm/ctm.js"></script>
 		<script src="../examples/js/loaders/ctm/CTMLoader.js"></script>
-
+		
 		<script src="../examples/js/exporters/ColladaExporter.js"></script>
 		<script src="../examples/js/exporters/GLTFExporter.js"></script>
 		<script src="../examples/js/exporters/OBJExporter.js"></script>
 		<script src="../examples/js/exporters/STLExporter.js"></script>
-
+		
 		<script src="../examples/js/renderers/Projector.js"></script>
 		<script src="../examples/js/renderers/RaytracingRenderer.js"></script>
 		<script src="../examples/js/renderers/SoftwareRenderer.js"></script>
@@ -342,5 +343,121 @@
 			*/
 
 		</script>
+
+		<div class="Panel" id="panel-material">
+			<div class="img-box" onclick="changeMaterial('../examples/textures/hardwood2_diffuse.jpg')">
+				<img src="../examples/textures/hardwood2_diffuse.jpg" alt="">
+			</div>
+			<div class="img-box" onclick="changeMaterial('../examples/textures/roughness_map.jpg')">
+				<img src="../examples/textures/roughness_map.jpg" alt="">
+			</div>
+			<div class="img-box" onclick="changeMaterial('../examples/textures/brick_diffuse.jpg')">
+				<img src="../examples/textures/brick_diffuse.jpg" alt="">
+			</div>
+			<div class="img-box" onclick="changeMaterial('../examples/textures/tri_pattern.jpg')">
+				<img src="../examples/textures/tri_pattern.jpg" alt="">
+			</div>
+			<div class="img-box" onclick="changeMaterial('../examples/textures/floors/FloorsCheckerboard_S_Diffuse.jpg')">
+				<img src="../examples/textures/floors/FloorsCheckerboard_S_Diffuse.jpg" alt="">
+			</div>
+			<hr />
+			<div class="img-box" onclick="addTextureBox('../examples/textures/tri_pattern.jpg')">
+				<img src="./image/box1.png" alt="">
+			</div>
+			<div class="img-box" onclick="addTextureBox('../examples/textures/floors/FloorsCheckerboard_S_Diffuse.jpg')">
+				<img src="./image/box2.png" alt="">
+			</div>
+			<div class="img-box" onclick="addTextureBox('../examples/textures/hardwood2_diffuse.jpg')">
+				<img src="./image/box3.png" alt="">
+			</div>
+		</div>
+		<style>
+			#menubar { z-index: 10; } /* fixed menubar cover stats */
+			#panel-material {
+				position: absolute;
+				top: 25%;
+				top: calc(50% - 273px);
+				left: 0;
+				/* height: 40%; */
+				padding: 10px;
+				background: #eee;
+			}
+			#panel-material .img-box {
+				overflow: hidden;
+				display: flex;
+				margin-bottom: 10px;
+				padding: 2px;
+				width: 50px;
+				height: 50px;
+				cursor: pointer;
+				border: 1px solid #888;
+			}
+			#panel-material .img-box:last-child {
+				margin-bottom: 0;
+			}
+			#panel-material img {
+				max-width: 100%;
+				max-height: 100%;
+			}
+		</style>
+		<script>
+
+			// stats监控
+
+			var stats = new Stats();
+			stats.domElement.style.position = 'absolute';
+			stats.domElement.style.top = '37px';
+			stats.domElement.style.left = '5px';
+			stats.domElement.style['z-index'] = '1';
+			document.body.appendChild( stats.domElement );
+			(function statsLoop() {
+				requestAnimationFrame(statsLoop);
+				stats.update();
+			})();
+
+			function changeMaterial(imgSrc) {
+				var loader = new THREE.ImageLoader();
+				loader.load(
+					imgSrc,
+					function ( image ) {
+						var currentMaterialSlot = 0;
+						var currentObject = editor.selected;
+						var texture = new THREE.Texture(image);
+						var material = new THREE.MeshStandardMaterial( {
+							map: texture
+						} );
+						material.map.needsUpdate = true;
+						editor.execute( new SetMaterialMapCommand( currentObject, 'map', material.map, currentMaterialSlot ) );
+					},
+					undefined, // onProgress
+					function () {
+						console.error('An error happened.');
+					}
+				);
+			}
+			/**
+			 * 导入Json Object
+			 */
+			function importJsonObj(jsonSrc) {
+
+				var loader = new THREE.ObjectLoader();
+
+				loader.load(jsonSrc, function( object ){
+					editor.execute( new AddObjectCommand( object ) );
+				});
+
+			}
+
+			function addTextureBox( imgSrc ) {
+				var texture = new THREE.TextureLoader().load( imgSrc );
+				var geometry = new THREE.BoxGeometry();
+				var material = new THREE.MeshStandardMaterial( { map: texture } );
+				var mesh = new THREE.Mesh( geometry, material );
+				mesh.name = 'Box1';
+
+				editor.execute( new AddObjectCommand( mesh ) );
+			}
+		</script>
+
 	</body>
 </html>
