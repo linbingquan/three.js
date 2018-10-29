@@ -30,6 +30,10 @@ var Editor = function () {
 
 		editorCleared: new Signal(),
 
+		editorLookAtTop: new Signal(),
+		editorLookAtForward: new Signal(),
+		editorLookAtRight: new Signal(),
+
 		savingStarted: new Signal(),
 		savingFinished: new Signal(),
 
@@ -435,6 +439,30 @@ Editor.prototype = {
 	focusById: function ( id ) {
 
 		this.focus( this.scene.getObjectById( id, true ) );
+
+	},
+
+	lookAtTop: function () {
+
+		this.camera.position.set( 0, 50, 0 );
+		this.camera.lookAt( new THREE.Vector3() );
+		this.signals.editorLookAtTop.dispatch();
+
+	},
+
+	lookAtForward: function () {
+
+		this.camera.position.set( 0, 0, 50 );
+		this.camera.lookAt( new THREE.Vector3() );
+		this.signals.editorLookAtForward.dispatch();
+
+	},
+
+	lookAtRight: function () {
+
+		this.camera.position.set( 50, 0, 0 );
+		this.camera.lookAt( new THREE.Vector3() );
+		this.signals.editorLookAtRight.dispatch();
 
 	},
 

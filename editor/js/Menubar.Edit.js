@@ -18,6 +18,38 @@ Menubar.Edit = function ( editor ) {
 	options.setClass( 'options' );
 	container.add( options );
 
+	var option = new UI.Row();
+	option.setClass( 'option' );
+	option.setTextContent( '顶视图' );
+	option.onClick( function () {
+
+		editor.lookAtTop();
+
+	} );
+	options.add( option );
+
+	var option = new UI.Row();
+	option.setClass( 'option' );
+	option.setTextContent( '前视图' );
+	option.onClick( function () {
+
+		editor.lookAtForward();
+
+	} );
+	options.add( option );
+
+	var option = new UI.Row();
+	option.setClass( 'option' );
+	option.setTextContent( '右视图' );
+	option.onClick( function () {
+
+		editor.lookAtRight();
+
+	} );
+	options.add( option );
+
+	options.add( new UI.HorizontalRule() );
+
 	// Undo
 
 	var undo = new UI.Row();
