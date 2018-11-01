@@ -258,12 +258,13 @@ Menubar.Edit = function ( editor ) {
 
 			document.getElementById('sidebar').className = 'Plane hidden';
 			document.getElementById('viewport').className = 'Plane fullscreen';
-
+			document.getElementById('player').className = 'Plane fullscreen';
 
 		} else {
 
 			document.getElementById('sidebar').className = 'Plane';
 			document.getElementById('viewport').className = 'Plane';
+			document.getElementById('player').className = 'Plane';
 
 		}
 

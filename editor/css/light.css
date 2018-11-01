@@ -52,9 +52,9 @@ select {
 	bottom: 0;
 }
 
-#viewport.fullscreen {
-	right: 0;
-}
+	#viewport.fullscreen {
+		right: 0;
+	}
 
 	#viewport #info {
 		text-shadow: 1px 1px 0 rgba(0,0,0,0.25);
@@ -77,6 +77,10 @@ select {
 	right: 300px;
 	bottom: 0;
 }
+
+	#player.fullscreen {
+		right: 0;
+	}
 
 #menubar {
 	position: absolute;
@@ -162,9 +166,9 @@ select {
 	overflow: auto;
 }
 
-#sidebar.hidden {
-	display: none;
-}
+	#sidebar.hidden {
+		display: none;
+	}
 
 	#sidebar * {
 		vertical-align: middle;
