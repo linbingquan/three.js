@@ -231,6 +231,46 @@ Menubar.Edit = function ( editor ) {
 	} );
 	options.add( option );
 
+	// ---
+
+	options.add( new UI.HorizontalRule() );
+
+	var option = new UI.Row();
+	option.setClass( 'option' );
+	option.setTextContent( '切换属性控制栏' );
+	option.onClick( function () {
+
+		var classList = document.getElementById('sidebar').className.split(' ');
+
+		var hasHidden = false;
+
+		classList.forEach((element, index) => {
+
+			if (element === 'hidden') {
+
+				hasHidden = true;
+
+			}
+
+		});
+
+		if (!hasHidden) {
+
+			document.getElementById('sidebar').className = 'Plane hidden';
+			document.getElementById('viewport').className = 'Plane fullscreen';
+
+
+		} else {
+
+			document.getElementById('sidebar').className = 'Plane';
+			document.getElementById('viewport').className = 'Plane';
+
+		}
+
+		editor.signals.windowResize.dispatch();
+
+	} );
+	options.add( option );
 
 	return container;
 

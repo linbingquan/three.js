@@ -52,6 +52,10 @@ select {
 	bottom: 0;
 }
 
+#viewport.fullscreen {
+	right: 0;
+}
+
 	#viewport #info {
 		text-shadow: 1px 1px 0 rgba(0,0,0,0.25);
 		pointer-events: none;
@@ -155,6 +159,10 @@ select {
 	width: 300px;
 	background: #eee;
 	overflow: auto;
+}
+
+#sidebar.hidden {
+	display: none;
 }
 
 	#sidebar * {
