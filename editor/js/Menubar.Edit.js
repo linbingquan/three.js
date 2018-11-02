@@ -4,23 +4,57 @@
 
 Menubar.Edit = function ( editor ) {
 
+	var strings = editor.strings;
+
 	var container = new UI.Panel();
 	container.setClass( 'menu' );
 
 	var title = new UI.Panel();
 	title.setClass( 'title' );
-	title.setTextContent( 'Edit' );
+	title.setTextContent( strings.getKey( 'menubar/edit' ) );
 	container.add( title );
 
 	var options = new UI.Panel();
 	options.setClass( 'options' );
 	container.add( options );
 
+	var option = new UI.Row();
+	option.setClass( 'option' );
+	option.setTextContent( '顶视图' );
+	option.onClick( function () {
+
+		editor.lookAtTop();
+
+	} );
+	options.add( option );
+
+	var option = new UI.Row();
+	option.setClass( 'option' );
+	option.setTextContent( '前视图' );
+	option.onClick( function () {
+
+		editor.lookAtForward();
+
+	} );
+	options.add( option );
+
+	var option = new UI.Row();
+	option.setClass( 'option' );
+	option.setTextContent( '右视图' );
+	option.onClick( function () {
+
+		editor.lookAtRight();
+
+	} );
+	options.add( option );
+
+	options.add( new UI.HorizontalRule() );
+
 	// Undo
 
 	var undo = new UI.Row();
 	undo.setClass( 'option' );
-	undo.setTextContent( 'Undo (Ctrl+Z)' );
+	undo.setTextContent( strings.getKey( 'menubar/edit/undo' ) );
 	undo.onClick( function () {
 
 		editor.undo();
@@ -32,7 +66,7 @@ Menubar.Edit = function ( editor ) {
 
 	var redo = new UI.Row();
 	redo.setClass( 'option' );
-	redo.setTextContent( 'Redo (Ctrl+Shift+Z)' );
+	redo.setTextContent( strings.getKey( 'menubar/edit/redo' ) );
 	redo.onClick( function () {
 
 		editor.redo();
@@ -44,7 +78,7 @@ Menubar.Edit = function ( editor ) {
 
 	var option = new UI.Row();
 	option.setClass( 'option' );
-	option.setTextContent( 'Clear History' );
+	option.setTextContent( strings.getKey( 'menubar/edit/clear_history' ) );
 	option.onClick( function () {
 
 		if ( confirm( 'The Undo/Redo History will be cleared. Are you sure?' ) ) {
@@ -86,7 +120,7 @@ Menubar.Edit = function ( editor ) {
 
 	var option = new UI.Row();
 	option.setClass( 'option' );
-	option.setTextContent( 'Clone' );
+	option.setTextContent( strings.getKey( 'menubar/edit/clone' ) );
 	option.onClick( function () {
 
 		var object = editor.selected;
@@ -104,7 +138,7 @@ Menubar.Edit = function ( editor ) {
 
 	var option = new UI.Row();
 	option.setClass( 'option' );
-	option.setTextContent( 'Delete (Del)' );
+	option.setTextContent( strings.getKey( 'menubar/edit/delete' ) );
 	option.onClick( function () {
 
 		var object = editor.selected;
@@ -121,7 +155,7 @@ Menubar.Edit = function ( editor ) {
 
 	var option = new UI.Row();
 	option.setClass( 'option' );
-	option.setTextContent( 'Minify Shaders' );
+	option.setTextContent( strings.getKey( 'menubar/edit/minify_shaders' ) );
 	option.onClick( function() {
 
 		var root = editor.selected || editor.scene;
@@ -197,6 +231,47 @@ Menubar.Edit = function ( editor ) {
 	} );
 	options.add( option );
 
+	// ---
+
+	options.add( new UI.HorizontalRule() );
+
+	var option = new UI.Row();
+	option.setClass( 'option' );
+	option.setTextContent( '切换属性控制栏' );
+	option.onClick( function () {
+
+		var classList = document.getElementById('sidebar').className.split(' ');
+
+		var hasHidden = false;
+
+		classList.forEach((element, index) => {
+
+			if (element === 'hidden') {
+
+				hasHidden = true;
+
+			}
+
+		});
+
+		if (!hasHidden) {
+
+			document.getElementById('sidebar').className = 'Plane hidden';
+			document.getElementById('viewport').className = 'Plane fullscreen';
+			document.getElementById('player').className = 'Plane fullscreen';
+
+		} else {
+
+			document.getElementById('sidebar').className = 'Plane';
+			document.getElementById('viewport').className = 'Plane';
+			document.getElementById('player').className = 'Plane';
+
+		}
+
+		editor.signals.windowResize.dispatch();
+
+	} );
+	options.add( option );
 
 	return container;
 

@@ -52,6 +52,10 @@ select {
 	bottom: 0;
 }
 
+	#viewport.fullscreen {
+		right: 0;
+	}
+
 	#viewport #info {
 		text-shadow: 1px 1px 0 rgba(0,0,0,0.25);
 		pointer-events: none;
@@ -73,6 +77,10 @@ select {
 	right: 300px;
 	bottom: 0;
 }
+
+	#player.fullscreen {
+		right: 0;
+	}
 
 #menubar {
 	position: absolute;
@@ -103,6 +111,7 @@ select {
 			color: #888;
 			margin: 0;
 			padding: 8px;
+			line-height: 16px;
 		}
 
 		#menubar .menu .options {
@@ -156,6 +165,10 @@ select {
 	background: #eee;
 	overflow: auto;
 }
+
+	#sidebar.hidden {
+		display: none;
+	}
 
 	#sidebar * {
 		vertical-align: middle;
@@ -213,6 +226,8 @@ select {
 
 	#toolbar button {
 		margin-right: 6px;
+		line-height: 14px;
+		height: 24px;
 	}
 
 .Outliner {

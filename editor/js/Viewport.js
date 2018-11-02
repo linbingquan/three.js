@@ -164,6 +164,7 @@ var Viewport = function ( editor ) {
 
 	function handleClick() {
 
+		// TODO: multiple choice obj
 		if ( onDownPosition.distanceTo( onUpPosition ) === 0 ) {
 
 			var intersects = getIntersects( onUpPosition, objects );
@@ -274,6 +275,24 @@ var Viewport = function ( editor ) {
 	} );
 
 	// signals
+
+	signals.editorLookAtTop.add( function () {
+
+		render();
+
+	} );
+
+	signals.editorLookAtForward.add( function () {
+
+		render();
+
+	} );
+
+	signals.editorLookAtRight.add( function () {
+
+		render();
+
+	} );
 
 	signals.editorCleared.add( function () {
 

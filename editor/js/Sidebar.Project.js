@@ -6,11 +6,11 @@ Sidebar.Project = function ( editor ) {
 
 	var config = editor.config;
 	var signals = editor.signals;
+	var strings = editor.strings;
 
 	var rendererTypes = {
 
 		'WebGLRenderer': THREE.WebGLRenderer,
-		'CanvasRenderer': THREE.CanvasRenderer,
 		'SVGRenderer': THREE.SVGRenderer,
 		'SoftwareRenderer': THREE.SoftwareRenderer,
 		'RaytracingRenderer': THREE.RaytracingRenderer
@@ -30,7 +30,7 @@ Sidebar.Project = function ( editor ) {
 
 	} );
 
-	titleRow.add( new UI.Text( 'Title' ).setWidth( '90px' ) );
+	titleRow.add( new UI.Text( strings.getKey( 'sidebar/project/title' ) ).setWidth( '90px' ) );
 	titleRow.add( title );
 
 	container.add( titleRow );
@@ -44,7 +44,7 @@ Sidebar.Project = function ( editor ) {
 
 	} );
 
-	editableRow.add( new UI.Text( 'Editable' ).setWidth( '90px' ) );
+	editableRow.add( new UI.Text( strings.getKey( 'sidebar/project/editable' ) ).setWidth( '90px' ) );
 	editableRow.add( editable );
 
 	container.add( editableRow );
@@ -58,7 +58,7 @@ Sidebar.Project = function ( editor ) {
 
 	} );
 
-	vrRow.add( new UI.Text( 'VR' ).setWidth( '90px' ) );
+	vrRow.add( new UI.Text( strings.getKey( 'sidebar/project/vr' ) ).setWidth( '90px' ) );
 	vrRow.add( vr );
 
 	container.add( vrRow );
@@ -71,7 +71,19 @@ Sidebar.Project = function ( editor ) {
 
 		if ( key.indexOf( 'WebGL' ) >= 0 && System.support.webgl === false ) continue;
 
-		options[ key ] = key;
+		var optionTxt = '???';
+
+		if ( key === 'WebGLRenderer' ) {
+			optionTxt = strings.getKey( 'sidebar/project/renderer/webglrenderer' )
+		} else if ( key === 'SVGRenderer' ) {
+			optionTxt = strings.getKey( 'sidebar/project/renderer/svgrenderer' )
+		} else if ( key === 'SoftwareRenderer' ) {
+			optionTxt = strings.getKey( 'sidebar/project/renderer/softwarerenderer' )
+		} else if ( key === 'RaytracingRenderer' ) {
+			optionTxt = strings.getKey( 'sidebar/project/renderer/raytracingrenderer' )
+		}
+
+		options[ key ] = optionTxt;
 
 	}
 
@@ -86,7 +98,7 @@ Sidebar.Project = function ( editor ) {
 
 	} );
 
-	rendererTypeRow.add( new UI.Text( 'Renderer' ).setWidth( '90px' ) );
+	rendererTypeRow.add( new UI.Text( strings.getKey( 'sidebar/project/renderer' ) ).setWidth( '90px' ) );
 	rendererTypeRow.add( rendererType );
 
 	container.add( rendererTypeRow );
@@ -101,7 +113,7 @@ Sidebar.Project = function ( editor ) {
 
 	var rendererPropertiesRow = new UI.Row().setMarginLeft( '90px' );
 
-	var rendererAntialias = new UI.THREE.Boolean( config.getKey( 'project/renderer/antialias' ), 'antialias' ).onChange( function () {
+	var rendererAntialias = new UI.THREE.Boolean( config.getKey( 'project/renderer/antialias' ), strings.getKey( 'sidebar/project/antialias' ) ).onChange( function () {
 
 		config.setKey( 'project/renderer/antialias', this.getValue() );
 		updateRenderer();
@@ -111,7 +123,7 @@ Sidebar.Project = function ( editor ) {
 
 	// Renderer / Shadows
 
-	var rendererShadows = new UI.THREE.Boolean( config.getKey( 'project/renderer/shadows' ), 'shadows' ).onChange( function () {
+	var rendererShadows = new UI.THREE.Boolean( config.getKey( 'project/renderer/shadows' ), strings.getKey( 'sidebar/project/shadows' ) ).onChange( function () {
 
 		config.setKey( 'project/renderer/shadows', this.getValue() );
 		updateRenderer();
@@ -123,7 +135,7 @@ Sidebar.Project = function ( editor ) {
 
 	// Renderer / Gamma input
 
-	var rendererGammaInput = new UI.THREE.Boolean( config.getKey( 'project/renderer/gammaInput' ), 'γ input' ).onChange( function () {
+	var rendererGammaInput = new UI.THREE.Boolean( config.getKey( 'project/renderer/gammaInput' ), strings.getKey( 'sidebar/project/gammainput' ) ).onChange( function () {
 
 		config.setKey( 'project/renderer/gammaInput', this.getValue() );
 		updateRenderer();
@@ -133,7 +145,7 @@ Sidebar.Project = function ( editor ) {
 
 	// Renderer / Gamma output
 
-	var rendererGammaOutput = new UI.THREE.Boolean( config.getKey( 'project/renderer/gammaOutput' ), 'γ output' ).onChange( function () {
+	var rendererGammaOutput = new UI.THREE.Boolean( config.getKey( 'project/renderer/gammaOutput' ), strings.getKey( 'sidebar/project/gammaoutput' ) ).onChange( function () {
 
 		config.setKey( 'project/renderer/gammaOutput', this.getValue() );
 		updateRenderer();
@@ -152,12 +164,6 @@ Sidebar.Project = function ( editor ) {
 	}
 
 	function createRenderer( type, antialias, shadows, gammaIn, gammaOut ) {
-
-		if ( type === 'WebGLRenderer' && System.support.webgl === false ) {
-
-			type = 'CanvasRenderer';
-
-		}
 
 		rendererPropertiesRow.setDisplay( type === 'WebGLRenderer' ? '' : 'none' );
 
