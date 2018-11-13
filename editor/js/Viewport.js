@@ -264,6 +264,10 @@ var Viewport = function ( editor ) {
 	container.dom.addEventListener( 'touchstart', onTouchStart, false );
 	container.dom.addEventListener( 'dblclick', onDoubleClick, false );
 
+	// 绘图控件
+
+	var drawControls = new THREE.DrawControls( camera, container.dom );
+
 	// controls need to be added *after* main logic,
 	// otherwise controls.enabled doesn't work.
 
