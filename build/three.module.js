@@ -179,7 +179,7 @@ Object.assign( EventDispatcher.prototype, {
 
 } );
 
-var REVISION = '98';
+var REVISION = '99dev';
 var MOUSE = { LEFT: 0, MIDDLE: 1, RIGHT: 2 };
 var CullFaceNone = 0;
 var CullFaceBack = 1;
@@ -6158,11 +6158,11 @@ var uv2_vertex = "#if defined( USE_LIGHTMAP ) || defined( USE_AOMAP )\n\tvUv2 = 
 
 var worldpos_vertex = "#if defined( USE_ENVMAP ) || defined( DISTANCE ) || defined ( USE_SHADOWMAP )\n\tvec4 worldPosition = modelMatrix * vec4( transformed, 1.0 );\n#endif\n";
 
-var background_frag = "uniform sampler2D t2D;\nvarying vec2 vUv;\nvoid main() {\n\tgl_FragColor = texture2D( t2D, vUv );\n}\n";
+var background_frag = "uniform sampler2D t2D;\nvarying vec2 vUv;\nvoid main() {\n\tvec4 texColor = texture2D( t2D, vUv );\n\tgl_FragColor = mapTexelToLinear( texColor );\n\t#include <tonemapping_fragment>\n\t#include <encodings_fragment>\n}\n";
 
-var background_vert = "varying vec2 vUv;\nuniform mat3 uvTransform;\nvoid main() {\n\tvUv = ( uvTransform * vec3( uv, 1 ) ).xy;\n\tgl_Position = vec4( position, 1.0 );\n\tgl_Position.z = 1.0;\n}\n";
+var background_vert = "varying vec2 vUv;\nuniform mat3 uvTransform;\nvoid main() {\n\tvUv = ( uvTransform * vec3( uv, 1 ) ).xy;\n\tgl_Position = vec4( position.xy, 1.0, 1.0 );\n}\n";
 
-var cube_frag = "uniform samplerCube tCube;\nuniform float tFlip;\nuniform float opacity;\nvarying vec3 vWorldDirection;\nvoid main() {\n\tgl_FragColor = textureCube( tCube, vec3( tFlip * vWorldDirection.x, vWorldDirection.yz ) );\n\tgl_FragColor.a *= opacity;\n}\n";
+var cube_frag = "uniform samplerCube tCube;\nuniform float tFlip;\nuniform float opacity;\nvarying vec3 vWorldDirection;\nvoid main() {\n\tvec4 texColor = textureCube( tCube, vec3( tFlip * vWorldDirection.x, vWorldDirection.yz ) );\n\tgl_FragColor = envMapTexelToLinear( texColor );\n\tgl_FragColor.a *= opacity;\n\t#include <tonemapping_fragment>\n\t#include <encodings_fragment>\n}\n";
 
 var cube_vert = "varying vec3 vWorldDirection;\n#include <common>\nvoid main() {\n\tvWorldDirection = transformDirection( position, modelMatrix );\n\t#include <begin_vertex>\n\t#include <project_vertex>\n\tgl_Position.z = gl_Position.w;\n}\n";
 
@@ -14639,6 +14639,17 @@ function WebGLBackground( renderer, state, objects, premultipliedAlpha ) {
 
 				};
 
+				// enable code injection for non-built-in material
+				Object.defineProperty( boxMesh.material, 'envMap', {
+
+					get: function () {
+
+						return this.uniforms.tCube.value;
+
+					}
+
+				} );
+
 				objects.update( boxMesh );
 
 			}
@@ -14668,6 +14679,17 @@ function WebGLBackground( renderer, state, objects, premultipliedAlpha ) {
 				);
 
 				planeMesh.geometry.removeAttribute( 'normal' );
+
+				// enable code injection for non-built-in material
+				Object.defineProperty( planeMesh.material, 'map', {
+
+					get: function () {
+
+						return this.uniforms.t2D.value;
+
+					}
+
+				} );
 
 				objects.update( planeMesh );
 
@@ -17793,15 +17815,23 @@ function WebGLRenderLists() {
 
 	function get( scene, camera ) {
 
-		var hash = scene.id + ',' + camera.id;
-		var list = lists[ hash ];
-
-		if ( list === undefined ) {
-
-			// console.log( 'THREE.WebGLRenderLists:', hash );
+		var cameras = lists[ scene.id ];
+		var list;
+		if ( cameras === undefined ) {
 
 			list = new WebGLRenderList();
-			lists[ hash ] = list;
+			lists[ scene.id ] = {};
+			lists[ scene.id ][ camera.id ] = list;
+
+		} else {
+
+			list = cameras[ camera.id ];
+			if ( list === undefined ) {
+
+				list = new WebGLRenderList();
+				cameras[ camera.id ] = list;
+
+			}
 
 		}
 
@@ -26379,6 +26409,11 @@ Points.prototype = Object.assign( Object.create( Object3D.prototype ), {
 function VideoTexture( video, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy ) {
 
 	Texture.call( this, video, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy );
+
+	this.format = format !== undefined ? format : RGBFormat;
+
+	this.minFilter = minFilter !== undefined ? minFilter : LinearFilter;
+	this.magFilter = magFilter !== undefined ? magFilter : LinearFilter;
 
 	this.generateMipmaps = false;
 
@@ -45396,7 +45431,7 @@ DirectionalLightHelper.prototype.update = function () {
 		v2.setFromMatrixPosition( this.light.target.matrixWorld );
 		v3.subVectors( v2, v1 );
 
-		this.lightPlane.lookAt( v3 );
+		this.lightPlane.lookAt( v2 );
 
 		if ( this.color !== undefined ) {
 
@@ -45410,7 +45445,7 @@ DirectionalLightHelper.prototype.update = function () {
 
 		}
 
-		this.targetLine.lookAt( v3 );
+		this.targetLine.lookAt( v2 );
 		this.targetLine.scale.z = v3.length();
 
 	};
