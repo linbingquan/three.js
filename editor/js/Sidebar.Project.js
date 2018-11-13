@@ -71,7 +71,19 @@ Sidebar.Project = function ( editor ) {
 
 		if ( key.indexOf( 'WebGL' ) >= 0 && System.support.webgl === false ) continue;
 
-		options[ key ] = key;
+		var optionTxt = '???';
+
+		if ( key === 'WebGLRenderer' ) {
+			optionTxt = strings.getKey( 'sidebar/project/renderer/webglrenderer' )
+		} else if ( key === 'SVGRenderer' ) {
+			optionTxt = strings.getKey( 'sidebar/project/renderer/svgrenderer' )
+		} else if ( key === 'SoftwareRenderer' ) {
+			optionTxt = strings.getKey( 'sidebar/project/renderer/softwarerenderer' )
+		} else if ( key === 'RaytracingRenderer' ) {
+			optionTxt = strings.getKey( 'sidebar/project/renderer/raytracingrenderer' )
+		}
+
+		options[ key ] = optionTxt;
 
 	}
 
