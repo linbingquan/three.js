@@ -4,8 +4,15 @@
 
 THREE.DrawControls = function ( camera, domElement ) {
 
+	// THREE.Object3D.call( this );
+
 	domElement = domElement !== undefined ? domElement : document;
 
+	// API
+
+	this.enabled = false;
+
+	var scope = this;
 	var vector3List = [];
 	var raycaster = new THREE.Raycaster();
 
@@ -25,6 +32,8 @@ THREE.DrawControls = function ( camera, domElement ) {
 
 	function onMouseDown( event ) {
 
+		if ( scope.enabled === false ) return;
+
 		event.preventDefault();
 
 		var pointer = getPointer( event );
@@ -42,7 +51,11 @@ THREE.DrawControls = function ( camera, domElement ) {
 
 	}
 
-	function onMouseMove( event ) {}
+	function onMouseMove( event ) {
+
+		if ( scope.enabled === false ) return;
+
+	}
 
 	function onKeyDown( event ) {
 
@@ -77,7 +90,7 @@ THREE.DrawControls = function ( camera, domElement ) {
 
 		var extrudeSettings = {
 			steps: 2,
-			depth: 1, // 深度
+			depth: 1, // TODO: 动态获取 深度
 			bevelEnabled: false,
 			bevelThickness: 1,
 			bevelSize: 1,
@@ -97,6 +110,14 @@ THREE.DrawControls = function ( camera, domElement ) {
 	document.addEventListener( "keydown", onKeyDown, false );
 
 };
+
+// THREE.DrawControls.prototype = Object.assign( Object.create( THREE.Object3D.prototype ), {
+
+// 	constructor: THREE.DrawControls,
+
+// 	isDrawControls: true
+
+// } );
 
 THREE.DrawControls.prototype = Object.create( THREE.EventDispatcher.prototype );
 THREE.DrawControls.prototype.constructor = THREE.DrawControls;
