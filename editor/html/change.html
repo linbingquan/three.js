@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>change</title>
+    <style>
+        html {
+            font-size: 62.5%;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+        }
+        /* 大横条 */
+        .titles {   
+            z-index: 2;
+            position: absolute;
+            display: none;
+            bottom: 0%;
+            left: 0%;
+            height: 20%;
+            width: 100%;
+            background: #5eb0de;
+            font-family: Helvetica;
+        }
+        /* 所有图片和文字的div */
+        .row-box {
+            z-index: 3;
+            position: absolute;
+            left: 30%;
+            height: 90%;
+            width: 40%;
+            cursor: pointer;
+        }
+        /* 单个图片和文字的div */
+        .img-text-box {
+            z-index: 4;
+            position: absolute;
+            top: 10%;
+        }
+        /* 图片的div */
+        .img-box {
+            z-index: 5;
+            position: absolute;
+            left: 20%;
+            top: 0%;
+            height: 70%;
+            width: 60%;
+        }
+        
+        .switch-img {
+            z-index: 6;
+            width: 100%;
+            height: auto;
+        }
+        /* 选中的图片div */
+        .selected {
+            z-index: 7;
+            position: absolute;
+            right: -3px;
+            bottom: 3px;
+            height: 30%;
+            width: 30%;
+        }
+        /* 文字的div */
+        .switch-name {
+            z-index: 7;
+            display: none;
+            position: absolute;
+            bottom: 5%;
+            left: 20%;
+            height: 3rem;
+            width: 60%;
+            text-align: center;
+            font-size: 2rem;
+        }
+    </style>
+</head>
+
+<body>
+    <link href="../css/bootstrap.min.css" rel="stylesheet" />
+    <script src="../js/jquery-3.3.1.min.js"></script>
+    <script src="../../build/three.js"></script>
+    <script src="../../examples/js/controls/OrbitControls.js"></script>
+    <script src="../../examples/js/WebGL.js"></script>
+    <!-- 导入模型的js文件 -->
+    <!-- fbx -->
+    <script src="../../examples/js/libs/inflate.min.js"></script> 
+     <script src ="../../examples/js/loaders/FBXLoader.js"></script>
+     <!-- json -->
+     <!-- <script src="../../src/loaders/ObjectLoader.js"></script> -->
+     <!-- <script src ="../../src/loaders/JSONLoader.js"></script>  -->
+    <script>
+        //three.js
+        var width = window.innerWidth
+        var height = window.innerHeight
+        var scene = new THREE.Scene();
+        //设置照相机
+        var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 25, 100);
+        camera.lookAt(new THREE.Vector3(0, 0, 0));
+
+        var renderer = new THREE.WebGLRenderer();
+        renderer.setClearColor(0xffffff)
+        renderer.setSize(width, height)
+
+        //添加摄像头控件
+        var orbitControls = new THREE.OrbitControls(camera);
+        orbitControls.autoRotate = true;
+        var selectObjFlag = true; //鼠标移至选项框无法点击物体标记位
+
+        // //添加点光源
+        var pointColor = "#ccffcc";
+        var pointLight = new THREE.PointLight(pointColor);
+        pointLight.distance = 0; //距离，决定了光线可以照射多远
+        pointLight.intensity = 1; //强度
+        pointLight.position = (0, 0, 50)
+        scene.add(pointLight);
+
+        //添加环境光
+        var ambiColor = "#333";
+        var ambientLight = new THREE.AmbientLight(ambiColor);
+        scene.add(ambientLight);
+
+        //创建物体
+        //创建房间
+        var boxBossGeometry = new THREE.BoxGeometry(150, 150, 150)
+        var boxBossMaterial = new THREE.MeshLambertMaterial({
+            color: 0xffffff,
+            side: THREE.BackSide,
+        })
+        var boxBoss = new THREE.Mesh(boxBossGeometry, boxBossMaterial);
+        boxBoss.position.set(0, 50, 0);
+        boxBoss.name = "boxBossName"
+        scene.add(boxBoss);
+        
+        //添加辅助线
+        // scene.add(new THREE.AxesHelper(10));
+
+        //导入模型 start
+        var zaoJu1,zaoJu2,zaoJu3,guiZi1,guiZi2,guiZi3,chouYouYanJi1,chouYouYanJi2,chouYouYanJi3;
+        var loader = new THREE.FBXLoader();
+        //灶具
+        loader.load('../fbx/灶具-jzx-qs02b_asm.fbx',function(object){
+            object.scale.multiplyScalar(.05) //模型大小缩放            
+            zaoJu1 = object;
+            zaoJu1.position.set(-40, 14, 6)  
+            zaoJu1.name="zaoJu1Name"                     
+            scene.add(zaoJu1);                            
+        });
+        loader.load('../fbx/灶具-jzx-qs02ba_asm.fbx',function(object){
+            object.scale.multiplyScalar(.05) //模型大小缩放    
+            zaoJu2 = object;        
+            zaoJu2.position.copy(zaoJu1.position)  
+            zaoJu2.name="zaoJu2Name"                                                
+        });
+        loader.load('../fbx/jzy-qs03b_asm.fbx',function(object){
+            object.scale.multiplyScalar(.05) //模型大小缩放  
+            zaoJu3 = object;          
+            zaoJu3.position.set(-40, 14, 6)
+            // zaoJu3.position.copy(zaoJu1.position)  
+            zaoJu3.name="zaoJu3Name"                                                 
+        });
+        //柜子
+        loader.load('../fbx/插座.fbx',function(object){
+            object.scale.multiplyScalar(.5) //模型大小缩放            
+            guiZi1 = object;
+            guiZi1.position.set(40, 10, 6)  
+            guiZi1.name="guiZi1Name"                     
+            scene.add(guiZi1);                             
+        });
+        loader.load('../fbx/消毒柜new_top_asm_asm1.fbx',function(object){
+            object.scale.multiplyScalar(.05) //模型大小缩放            
+            guiZi2 = object;
+            guiZi2.position.copy(guiZi1.position)
+            guiZi2.name="guiZi2Name"                                                 
+        });
+        loader.load('../fbx/消毒柜new_top_asm_asm2.fbx',function(object){
+            object.scale.multiplyScalar(.5) //模型大小缩放            
+            guiZi3 = object;
+            guiZi3.position.copy(guiZi1.position);
+            guiZi3.name="guiZi3Name"                                                
+        });
+        //抽油烟机
+        loader.load('../fbx/asm0001_asm.fbx',function(object){
+            object.scale.multiplyScalar(.05) //模型大小缩放            
+            chouYouYanJi1 = object;
+            chouYouYanJi1.position.set(0, 14, -20)
+            chouYouYanJi1.name="chouYouYanJi1Name"  
+            scene.add(chouYouYanJi1)                                              
+        });
+        loader.load('../fbx/消毒柜new_top_asm_asm1.fbx',function(object){
+            object.scale.multiplyScalar(.05) //模型大小缩放            
+            chouYouYanJi2 = object;
+            chouYouYanJi2.position.copy(chouYouYanJi1.position)
+            chouYouYanJi2.name="chouYouYanJi2Name"                                          
+        });
+        loader.load('../fbx/cxw200ccd03_asm_asm.fbx',function(object){
+            object.scale.multiplyScalar(.3) //模型大小缩放            
+            chouYouYanJi3 = object;
+            // chouYouYanJi3.position.copy(chouYouYanJi1.position)
+            chouYouYanJi3.position.set(0, 14, -20)        
+            chouYouYanJi3.name="chouYouYanJi3Name"                                                        
+        });
+        //导入模型 end
+
+
+        //鼠标点击事件
+        document.addEventListener('mousedown', onDocumentMouseDown, false);
+
+        function onDocumentMouseDown(event) {
+            var mouse = new THREE.Vector2();
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+            var raycaster = new THREE.Raycaster();
+            raycaster.setFromCamera(mouse, camera);
+
+            // 获取导入的模型中的Mesh
+            var scensObjs = [];
+            scene.children.forEach( function(child) {
+            for (var i = 0; i < child.children.length; i++) {
+            var obj=child.children[i];
+            scensObjs.push(obj);           
+            }
+            });
+            var intersects = raycaster.intersectObjects(scensObjs);
+            if (intersects.length > 0 && selectObjFlag == true) {
+                var name = intersects[0].object.parent.name;
+                console.log("选中"+intersects[0].object.name+";选中的物体父母是"+name)
+                select(name); //显示选择物体对应的选项框
+            }
+            if(intersects.length == false && selectObjFlag == true){   //点击空白处横条框隐藏
+                var noneDis = document.getElementsByClassName("titles");
+                noneDis[0].style.display = "none";
+            }
+
+        }
+
+        //将渲染器添加至HTML中
+        document.body.appendChild(renderer.domElement);
+
+        //渲染
+        function render() {
+            renderer.render(scene, camera)
+            requestAnimationFrame(render)
+        }
+        render()
+
+        function display(nameClass) {
+            var DisChlid;
+            document.getElementById(nameClass).style.display = "inline-flex";
+            DisChlid = document.getElementById(nameClass).getElementsByTagName("div") //显示选项
+            console.log(DisChlid);
+            for (i = 0; i < DisChlid.length; i++) {
+                DisChlid[i].style.display = "inline-block";
+            }
+        }
+        //显示选择物体对应的选项框
+        function select(name) {
+            var tablinks, Dis;
+            tablinks = document.getElementsByClassName("selected") //清除之前的选项样式
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].style.display = "none";
+            }
+            document.getElementById("zaoJu").style.display = "none";
+            document.getElementById("guiZi").style.display = "none";
+            document.getElementById("chouYouYanJi").style.display = "none";
+
+            Dis = document.getElementsByClassName("titles"); //显示选择的大横条框样式
+            Dis[0].style.display = "block";
+            switch (name) {  //根据选择对应的名字显示对应的选项框样式
+                case "zaoJu1Name":
+                    change(zaoJu1,"zaoJu1Id")
+                    display("zaoJu")
+                    break;
+                case "zaoJu2Name":
+                    change(zaoJu2,"zaoJu2Id")
+                    display("zaoJu")
+                    break;
+                case "zaoJu3Name":
+                    change(zaoJu3,"zaoJu3Id")
+                    display("zaoJu")
+                    break;
+                case "guiZi1Name":
+                    change(guiZi1,"guiZi1Id")
+                    display("guiZi")
+                    break;
+                case "guiZi2Name":
+                    change(guiZi2,"guiZi2Id")
+                    display("guiZi")
+                    break;
+                case "guiZi3Name":
+                    change(guiZi3,"guiZi3Id")
+                    display("guiZi")
+                    break;   
+                case "chouYouYanJi1Name":
+                    change(chouYouYanJi1,"chouYouYanJi1Id")
+                    display("chouYouYanJi")
+                    break;
+                case "chouYouYanJi2Name":
+                    change(chouYouYanJi2,"chouYouYanJi2Id")
+                    display("chouYouYanJi")
+                    break;   
+                case "chouYouYanJi3Name":
+                    change(chouYouYanJi3,"chouYouYanJi3Id")
+                    display("chouYouYanJi")
+                    break;
+                default:
+                    console.log("name选择错误:" + name)
+            }
+        }
+
+
+        //去除场景中的灶具
+        function removeZaoJu(){
+            scene.remove(zaoJu1);
+            scene.remove(zaoJu2);
+            scene.remove(zaoJu3);
+        }
+        //去除场景中的柜子
+        function removeGuiZi(){
+            scene.remove(guiZi1);
+            scene.remove(guiZi2);
+            scene.remove(guiZi3);
+        }
+        //去除场景中的抽油烟机
+        function removeChouYouYanJi(){
+            scene.remove(chouYouYanJi1);
+            scene.remove(chouYouYanJi2);
+            scene.remove(chouYouYanJi3);
+        }
+        //清除之前选中的选项样式并添加选择的选项样式
+        function clear(Id) {
+            var i, tablinks;
+            tablinks = document.getElementsByClassName("selected");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].style.display = "none"
+            }
+            document.getElementById(Id).style.display = "block";
+        }
+
+        //转换函数  
+        function change(obj, Id) {
+            var parentId, parentIdId, child;
+            clear(Id); //清除之前选中的样式
+            parentId = document.getElementById(Id).parentElement.id; //获取父级样式id
+            parentIdId = document.getElementById(parentId).parentElement.id; //获取祖父样式id
+            switch (parentIdId) {   //清除场景中物体
+                case "zaoJu":
+                    removeZaoJu();
+                    break;
+                case "guiZi":
+                    removeGuiZi();
+                    break;
+                case "chouYouYanJi":
+                    removeChouYouYanJi();
+                    break;    
+                default:
+                    alert("parentId选择错误:" + parentIdId)
+                    console.log("parentId选择错误:" + parentIdId)
+            }
+            child = document.getElementById(Id).children[1].style.display = "block"; //显示选中的图片（图片右下角）
+            scene.add(obj); //添加点击的物体
+        }
+    </script>
+<!-- 选项框 start -->
+    <div class="titles" onmouseover="selectObjFlag = false" onmouseout="selectObjFlag = true">
+        <!-- 灶具选项框 -->
+        <div class="row-box row" id="zaoJu">
+            <div id="zaoJu1Title" class="img-text-box col-md-4">
+                <div class="img-box " id="zaoJu1Id" onclick="change(zaoJu1,'zaoJu1Id')">
+                    <img class="switch-img" src="../image/消-811.png" alt="灶具1" style="height:100%">
+                    <img class="selected" src="../image/select.png" alt="选择图">
+                </div>
+                <div class="switch-name">灶具1</div>
+            </div>
+            <div id="zaoJu2Title" class="img-text-box col-md-4">
+                <div class="img-box " id="zaoJu2Id" onclick="change(zaoJu2,'zaoJu2Id')">
+                    <img class="switch-img" src="../image/消-817.png" alt="灶具2" style="height:100%">
+                    <img class="selected" src="../image/select.png" alt="选择图">
+                </div>
+                <div class="switch-name">灶具2</div>
+            </div>
+            <div id="zaoJu3Title" class="img-text-box col-md-4">
+                <div class="img-box " id="zaoJu3Id" onclick="change(zaoJu3,'zaoJu3Id')">
+                    <img class="switch-img" src="../image/消-825.png" alt="灶具3" style="height:100%">
+                    <img class="selected" src="../image/select.png" alt="选择图">
+                </div>
+                <div class="switch-name">灶具3</div>
+            </div>
+        </div>
+        <!-- 柜子选项框 -->
+        <div class="row-box row" id="guiZi">
+            <div id="guiZi1Title" class="img-text-box col-md-4">
+                <div class="img-box " id="guiZi1Id" onclick="change(guiZi1,'guiZi1Id')">
+                    <img class="switch-img" src="../image/灶-9b20.png" alt="柜子1" style="height:100%">
+                    <img class="selected" src="../image/select.png" alt="选择图">
+                </div>
+                <div class="switch-name">柜子1</div>
+            </div>
+            <div id="guiZi2Title" class="img-text-box col-md-4">
+                <div class="img-box " id="guiZi2Id" onclick="change(guiZi2,'guiZi2Id')">
+                    <img class="switch-img" src="../image/灶-9b52.png" alt="柜子2" style="height:100%">
+                    <img class="selected" src="../image/select.png" alt="选择图">
+                </div>
+                <div class="switch-name">柜子2</div>
+            </div>
+            <div id="guiZi3Title" class="img-text-box col-md-4">
+                <div class="img-box " id="guiZi3Id" onclick="change(guiZi3,'guiZi3Id')">
+                    <img class="switch-img" src="../image/灶-9g53.png" alt="柜子3" style="height:100%">
+                    <img class="selected" src="../image/select.png" alt="选择图">
+                </div>
+                <div class="switch-name">柜子3</div>
+            </div>
+        </div>
+        <!-- 抽油烟机选项框 -->
+        <div class="row-box row" id="chouYouYanJi">
+            <div id="chouYouYanJi1Title" class="img-text-box col-md-4">
+                <div class="img-box " id="chouYouYanJi1Id" onclick="change(chouYouYanJi1,'chouYouYanJi1Id')">
+                    <img class="switch-img" src="../image/烟-5900s.png" alt="抽油烟机1" style="height:100%">
+                    <img class="selected" src="../image/select.png" alt="选择图">
+                </div>
+                <div class="switch-name">抽油烟机1</div>
+            </div>
+            <div id="chouYouYanJi2Title" class="img-text-box col-md-4">
+                <div class="img-box " id="chouYouYanJi2Id" onclick="change(chouYouYanJi2,'chouYouYanJi2Id')">
+                    <img class="switch-img" src="../image/烟-8229S.png" alt="抽油烟机2" style="height:100%">
+                    <img class="selected" src="../image/select.png" alt="选择图">
+                </div>
+                <div class="switch-name">抽油烟机2</div>
+            </div>
+            <div id="chouYouYanJi3Title" class="img-text-box col-md-4">
+                <div class="img-box " id="chouYouYanJi3Id" onclick="change(chouYouYanJi3,'chouYouYanJi3Id')">
+                    <img class="switch-img" src="../image/烟-8332.png" alt="抽油烟机3" style="height:100%">
+                    <img class="selected" src="../image/select.png" alt="选择图">
+                </div>
+                <div class="switch-name">抽油烟机3</div>
+            </div>
+        </div>
+    </div>
+<!-- 选项框 end -->
+</body>
+
+</html>
