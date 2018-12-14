@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="../../build/three.js"></script>
+    <script src="../../examples/js/controls/OrbitControls.js"></script>
+    
+    <script src="../../examples/js/libs/inflate.min.js"></script>
+    <!-- <script src="../../examples/js/loaders/NRRDLoader.js"></script> -->
+    <script src="../../examples/js/curves/NURBSCurve.js"></script>
+    <script src="../../examples/js/curves/NURBSUtils.js"></script>
+    <script src="../../examples/js/loaders/FBXLoader.js"></script>
+    <style>
+        body { overflow: hidden; margin: 0; padding: 0; }
+    </style>
+</head>
+<body>
+    <script>
+        var scene = new THREE.Scene();
+        var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+        var control = new THREE.OrbitControls(camera);
+        control.autoRotate = true;
+        control.autoRotateSpeed = 1;
+
+        var renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+
+        // 挂载节点
+        document.body.appendChild(renderer.domElement);
+
+        var ambientLight = new THREE.AmbientLight( 0xffffff );
+        scene.add(ambientLight);
+
+        var loader = new THREE.FBXLoader();
+        loader.load('./models/cx.fbx', function (object) {
+
+            // bugfixed
+            object.children.forEach(element => {
+                if (element.material) {
+                    element.material.color = new THREE.Color('#ffffff');
+                    element.material.side = THREE.DoubleSide;
+                    element.rotation.x = THREE.Math.degToRad( 90 );
+                }
+            });
+
+            scene.add(object);
+
+        });
+
+        camera.position.set(0, 0, 150);
+
+        // 设置场景背景
+        function initSceneBG() {
+
+            var envMap = new THREE.CubeTextureLoader()
+                .setPath( '../../examples/textures/cube/skyboxsun25deg/')
+                .load( [ 'px.jpg', 'nx.jpg', 'py.jpg', 'ny.jpg', 'pz.jpg', 'nz.jpg' ] );
+
+            scene.background = envMap;
+
+        }
+
+        var animate = function () {
+            requestAnimationFrame(animate);
+            control.update();
+
+            renderer.render(scene, camera);
+        }
+        initSceneBG();
+        animate();
+
+        document.addEventListener( 'dragover', function ( event ) {
+
+            event.preventDefault();
+            event.dataTransfer.dropEffect = 'copy';
+
+        }, false );
+
+        document.addEventListener( 'drop', function ( event ) {
+
+            event.preventDefault();
+
+            console.log( event.dataTransfer.files );
+
+        }, false );
+    </script>
+</body>
+</html>
