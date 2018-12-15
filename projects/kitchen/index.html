@@ -57,12 +57,11 @@
         scene.add( directionalLight );
 
         var loader = new THREE.FBXLoader();
-        loader.load('./models/cx.fbx', function (object) {
+        loader.load('./models/cxw-200-ccs02.fbx', function (object) {
 
             // bugfixed
             object.children.forEach(child => {
                 if (child.material) {
-                    child.material.color = new THREE.Color('#ffffff');
                     child.material.side = THREE.DoubleSide;
                     child.rotation.x = THREE.Math.degToRad( 90 );
                 }
@@ -71,17 +70,72 @@
                 // child.receiveShadow = true;
             });
 
+            object.position.set(0, 0, 0);
+            scene.add(object);
+
+        });
+
+        loader.load('./models/cxw-200-ccs01a.fbx', function (object) {
+
+            // bugfixed
+            object.children.forEach(child => {
+                if (child.material) {
+                    child.material.side = THREE.DoubleSide;
+                    child.rotation.x = THREE.Math.degToRad( 90 );
+                }
+                //设置模型生成阴影并接收阴影
+                child.castShadow = true;
+                // child.receiveShadow = true;
+            });
+
+            object.position.set(140, 0, 0);
+            scene.add(object);
+
+        });
+
+        loader.load('./models/xztd105a-01.fbx', function (object) {
+
+            // bugfixed
+            object.children.forEach(child => {
+                if (child.material) {
+                    child.material.side = THREE.DoubleSide;
+                }
+                //设置模型生成阴影并接收阴影
+                child.castShadow = true;
+                // child.receiveShadow = true;
+            });
+
+            object.position.set(-150, 0, 0);
+            object.scale.set(0.2, 0.2, 0.2);
+            scene.add(object);
+
+        });
+
+        loader.load('./models/cxw-200-tcd02.fbx', function (object) {
+
+            // bugfixed
+            object.children.forEach(child => {
+                if (child.material) {
+                    child.material.side = THREE.DoubleSide;
+                }
+                //设置模型生成阴影并接收阴影
+                child.castShadow = true;
+                // child.receiveShadow = true;
+            });
+
+            object.position.set(300, 0, 0);
+            object.scale.set(0.5, 0.5, 0.5);
             scene.add(object);
 
         });
 
         // 地面
-        var geometry = new THREE.PlaneGeometry(500, 500);
+        var geometry = new THREE.PlaneGeometry(1000, 1000);
         var material = new THREE.MeshLambertMaterial({ color: 0xcccccc });
         material.side = THREE.DoubleSide;
         var plane = new THREE.Mesh(geometry, material);
         plane.rotation.x = -Math.PI / 2;
-        plane.position.y = -60;
+        plane.position.y = -70;
         plane.receiveShadow = true;
         scene.add(plane);
 
