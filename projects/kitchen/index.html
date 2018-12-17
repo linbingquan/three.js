@@ -13,23 +13,31 @@
     <script src="../../examples/js/curves/NURBSCurve.js"></script>
     <script src="../../examples/js/curves/NURBSUtils.js"></script>
     <script src="../../examples/js/loaders/FBXLoader.js"></script>
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
     <style>
         body { overflow: hidden; margin: 0; padding: 0; }
+
+        .white-bg { padding: 20px; background: rgba(255, 255, 255, 0.6); border-top: 1px solid rgba(0, 0, 0, .125); }
+        .gree-prod { margin: 0 auto; padding: 20px; width: 190px; cursor: pointer; }
+        .gree-prod:hover { box-shadow: 0 0 20px rgba(0, 0, 0, .125); }
+        .gree-prod .prod-img { margin: 0 auto; width: 150px; height: 150px; }
+        .gree-prod .prod-txt { text-align: center; text-transform: uppercase; }
     </style>
 </head>
 <body>
     <script>
         var scene = new THREE.Scene();
         var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        // var camera = new THREE.OrthographicCamera(window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, 1, 1000);
 
         var control = new THREE.OrbitControls(camera);
         control.autoRotate = true;
         control.autoRotateSpeed = 1;
 
-        var renderer = new THREE.WebGLRenderer({ antialias: true });
+        var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.enabled = true; // 渲染器开启阴影
 
         // 挂载节点
         document.body.appendChild(renderer.domElement);
@@ -47,8 +55,8 @@
         directionalLight.shadow.camera.bottom = -1000; //最下面
 
         //这两个值决定使用多少像素生成阴影 默认512
-        directionalLight.shadow.mapSize.height = 512;
-        directionalLight.shadow.mapSize.width = 512;
+        directionalLight.shadow.mapSize.height = 1024;
+        directionalLight.shadow.mapSize.width = 1024;
 
         //告诉平行光需要开启阴影投射
         directionalLight.castShadow = true;
@@ -139,7 +147,7 @@
         plane.receiveShadow = true;
         scene.add(plane);
 
-        camera.position.set(0, 0, 150);
+        camera.position.set(0, 0, 250);
 
         // 设置场景背景
         function initSceneBG() {
@@ -176,5 +184,33 @@
 
         }, false );
     </script>
+    <div class="fixed-bottom white-bg">
+        <div class="row justity-content-center">
+            <div class="col">
+                <div class="card gree-prod">
+                    <img class="prod-img" src="./image/cxw-200-ccs02.png" alt="">
+                    <div class="prod-txt">cxw-200-ccs02</div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card gree-prod">
+                    <img class="prod-img" src="./image/cxw-200-ccs01a.png" alt="">
+                    <div class="prod-txt">cxw-200-ccs01a</div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card gree-prod">
+                    <img class="prod-img" src="./image/cxw-200-tcd02.png" alt="">
+                    <div class="prod-txt">cxw-200-tcd02</div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card gree-prod">
+                    <img class="prod-img" src="./image/xztd105a-01.png" alt="">
+                    <div class="prod-txt">xztd105a-01</div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
