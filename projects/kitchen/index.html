@@ -42,6 +42,9 @@
         // 挂载节点
         document.body.appendChild(renderer.domElement);
 
+        var raycaster = new THREE.Raycaster();
+        var mouse = new THREE.Vector2(); // 鼠标移动位置
+
         var ambientLight = new THREE.AmbientLight( 0xffffff );
         scene.add(ambientLight);
 
@@ -78,6 +81,7 @@
                 // child.receiveShadow = true;
             });
 
+            object.name = "cxw-200-ccs02";
             object.position.set(0, 0, 0);
             scene.add(object);
 
@@ -96,6 +100,7 @@
                 // child.receiveShadow = true;
             });
 
+            object.name = "cxw-200-ccs01a";
             object.position.set(140, 0, 0);
             scene.add(object);
 
@@ -113,6 +118,7 @@
                 // child.receiveShadow = true;
             });
 
+            object.name = "xztd105a-01";
             object.position.set(-150, 0, 0);
             object.scale.set(0.2, 0.2, 0.2);
             scene.add(object);
@@ -131,6 +137,7 @@
                 // child.receiveShadow = true;
             });
 
+            object.name = "cxw-200-tcd02";
             object.position.set(300, 0, 0);
             object.scale.set(0.5, 0.5, 0.5);
             scene.add(object);
@@ -145,9 +152,35 @@
         plane.rotation.x = -Math.PI / 2;
         plane.position.y = -70;
         plane.receiveShadow = true;
+        plane.name = "ground";
         scene.add(plane);
 
         camera.position.set(0, 0, 250);
+
+        function onDocumentMouseDown( event ) {
+
+            event.preventDefault();
+
+            mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+            mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
+            raycaster.setFromCamera(mouse, camera);
+            
+            var intersectObjects = [];
+            for (let index = 0; index < scene.children.length; index++) {
+                const object = scene.children[index];
+                if ( object instanceof THREE.Group) {
+                    object.children[0].name = object.name;
+                    intersectObjects.push(object.children[0]);
+                }
+            }
+
+            var intersects = raycaster.intersectObjects( intersectObjects );
+            var intersected = intersects[0];
+
+        }
+
+        document.addEventListener( 'mousedown', onDocumentMouseDown, false );
 
         // 设置场景背景
         function initSceneBG() {
