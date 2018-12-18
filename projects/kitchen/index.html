@@ -13,6 +13,8 @@
     <script src="../../examples/js/curves/NURBSCurve.js"></script>
     <script src="../../examples/js/curves/NURBSUtils.js"></script>
     <script src="../../examples/js/loaders/FBXLoader.js"></script>
+    <script src="../../examples/js/objects/Reflector.js"></script>
+    <script src="./js/jquery-3.3.1.min.js"></script>
     <link rel="stylesheet" href="./css/bootstrap.min.css">
     <style>
         body { overflow: hidden; margin: 0; padding: 0; }
@@ -44,6 +46,7 @@
 
         var raycaster = new THREE.Raycaster();
         var mouse = new THREE.Vector2(); // 鼠标移动位置
+        var intersectedObj; // 用户选中对象
 
         var ambientLight = new THREE.AmbientLight( 0xffffff );
         scene.add(ambientLight);
@@ -82,7 +85,7 @@
             });
 
             object.name = "cxw-200-ccs02";
-            object.position.set(0, 0, 0);
+            object.position.set(0, 70, 0);
             scene.add(object);
 
         });
@@ -101,7 +104,7 @@
             });
 
             object.name = "cxw-200-ccs01a";
-            object.position.set(140, 0, 0);
+            object.position.set(140, 70, 0);
             scene.add(object);
 
         });
@@ -119,7 +122,7 @@
             });
 
             object.name = "xztd105a-01";
-            object.position.set(-150, 0, 0);
+            object.position.set(-150, 70, 0);
             object.scale.set(0.2, 0.2, 0.2);
             scene.add(object);
 
@@ -138,7 +141,7 @@
             });
 
             object.name = "cxw-200-tcd02";
-            object.position.set(300, 0, 0);
+            object.position.set(300, 70, 0);
             object.scale.set(0.5, 0.5, 0.5);
             scene.add(object);
 
@@ -150,12 +153,12 @@
         material.side = THREE.DoubleSide;
         var plane = new THREE.Mesh(geometry, material);
         plane.rotation.x = -Math.PI / 2;
-        plane.position.y = -70;
+        // plane.position.y = -70;
         plane.receiveShadow = true;
         plane.name = "ground";
         scene.add(plane);
 
-        camera.position.set(0, 0, 250);
+        camera.position.set(0, 70, 250);
 
         function onDocumentMouseDown( event ) {
 
@@ -178,9 +181,44 @@
             var intersects = raycaster.intersectObjects( intersectObjects );
             var intersected = intersects[0];
 
+            // 处理点击模型事件
+            handleSelectObj(intersected);
+
         }
 
         document.addEventListener( 'mousedown', onDocumentMouseDown, false );
+
+        function handleSelectObj( intersected ) {
+            if (intersected) {
+                $("#jsSelectBox").show();
+                $("#jsSelectBox").mouseenter(function () {
+                    document.removeEventListener( 'mousedown', onDocumentMouseDown, false );
+                });
+                $("#jsSelectBox").mouseleave(function () {
+                    document.addEventListener( 'mousedown', onDocumentMouseDown, false );
+                });
+                intersectedObj = intersected.object.parent;
+                var { x, y, z } = intersectedObj.position;
+                camera.lookAt(x, y, z);
+            } else {
+                $("#jsSelectBox").hide();
+            }
+        }
+
+        function handleLoadObj( fbxName ) {
+
+            loader.load('./models/' + fbxName + '.fbx', function (object) {
+
+                object.name = fbxName;
+                var { x, y, z } = intersectedObj.position;
+                object.position.set(x, y, z);
+                scene.add(object);
+
+                scene.remove(intersectedObj); // 删除选中对象
+                intersectedObj = object;
+
+            });
+        }
 
         // 设置场景背景
         function initSceneBG() {
@@ -217,28 +255,28 @@
 
         }, false );
     </script>
-    <div class="fixed-bottom white-bg">
+    <div id="jsSelectBox" class="fixed-bottom white-bg" style="display: none;">
         <div class="row justity-content-center">
             <div class="col">
-                <div class="card gree-prod">
+                <div class="card gree-prod" onclick="handleLoadObj('cxw-200-ccs02')">
                     <img class="prod-img" src="./image/cxw-200-ccs02.png" alt="">
                     <div class="prod-txt">cxw-200-ccs02</div>
                 </div>
             </div>
             <div class="col">
-                <div class="card gree-prod">
+                <div class="card gree-prod" onclick="handleLoadObj('cxw-200-ccs01a')">
                     <img class="prod-img" src="./image/cxw-200-ccs01a.png" alt="">
                     <div class="prod-txt">cxw-200-ccs01a</div>
                 </div>
             </div>
             <div class="col">
-                <div class="card gree-prod">
+                <div class="card gree-prod" onclick="handleLoadObj('cxw-200-tcd02')">
                     <img class="prod-img" src="./image/cxw-200-tcd02.png" alt="">
                     <div class="prod-txt">cxw-200-tcd02</div>
                 </div>
             </div>
             <div class="col">
-                <div class="card gree-prod">
+                <div class="card gree-prod" onclick="handleLoadObj('xztd105a-01')">
                     <img class="prod-img" src="./image/xztd105a-01.png" alt="">
                     <div class="prod-txt">xztd105a-01</div>
                 </div>
