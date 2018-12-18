@@ -88,8 +88,8 @@
 </head>
 
 <body>
-    <link href="../css/bootstrap.min.css" rel="stylesheet" />
-    <script src="../js/jquery-3.3.1.min.js"></script>
+    <link href="https://cdn.bootcss.com/twitter-bootstrap/3.4.0/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- <script src="./js/jquery-3.3.1.min.js"></script> -->
     <script src="../../build/three.js"></script>
     <script src="../../examples/js/controls/OrbitControls.js"></script>
     <script src="../../examples/js/WebGL.js"></script>
@@ -151,20 +151,20 @@
         var zaoJu1,zaoJu2,zaoJu3,guiZi1,guiZi2,guiZi3,chouYouYanJi1,chouYouYanJi2,chouYouYanJi3;
         var loader = new THREE.FBXLoader();
         //灶具
-        loader.load('../fbx/灶具-jzx-qs02b_asm.fbx',function(object){
+        loader.load('./fbx/灶具-jzx-qs02b_asm.fbx',function(object){
             object.scale.multiplyScalar(.05) //模型大小缩放            
             zaoJu1 = object;
             zaoJu1.position.set(-40, 14, 6)  
             zaoJu1.name="zaoJu1Name"                     
             scene.add(zaoJu1);                            
         });
-        loader.load('../fbx/灶具-jzx-qs02ba_asm.fbx',function(object){
+        loader.load('./fbx/灶具-jzx-qs02ba_asm.fbx',function(object){
             object.scale.multiplyScalar(.05) //模型大小缩放    
             zaoJu2 = object;        
             zaoJu2.position.copy(zaoJu1.position)  
             zaoJu2.name="zaoJu2Name"                                                
         });
-        loader.load('../fbx/jzy-qs03b_asm.fbx',function(object){
+        loader.load('./fbx/jzy-qs03b_asm.fbx',function(object){
             object.scale.multiplyScalar(.05) //模型大小缩放  
             zaoJu3 = object;          
             zaoJu3.position.set(-40, 14, 6)
@@ -172,40 +172,40 @@
             zaoJu3.name="zaoJu3Name"                                                 
         });
         //柜子
-        loader.load('../fbx/插座.fbx',function(object){
+        loader.load('./fbx/插座.fbx',function(object){
             object.scale.multiplyScalar(.5) //模型大小缩放            
             guiZi1 = object;
             guiZi1.position.set(40, 10, 6)  
             guiZi1.name="guiZi1Name"                     
             scene.add(guiZi1);                             
         });
-        loader.load('../fbx/消毒柜new_top_asm_asm1.fbx',function(object){
+        loader.load('./fbx/消毒柜new_top_asm_asm1.fbx',function(object){
             object.scale.multiplyScalar(.05) //模型大小缩放            
             guiZi2 = object;
             guiZi2.position.copy(guiZi1.position)
             guiZi2.name="guiZi2Name"                                                 
         });
-        loader.load('../fbx/消毒柜new_top_asm_asm2.fbx',function(object){
+        loader.load('./fbx/消毒柜new_top_asm_asm2.fbx',function(object){
             object.scale.multiplyScalar(.5) //模型大小缩放            
             guiZi3 = object;
             guiZi3.position.copy(guiZi1.position);
             guiZi3.name="guiZi3Name"                                                
         });
         //抽油烟机
-        loader.load('../fbx/asm0001_asm.fbx',function(object){
+        loader.load('./fbx/asm0001_asm.fbx',function(object){
             object.scale.multiplyScalar(.05) //模型大小缩放            
             chouYouYanJi1 = object;
             chouYouYanJi1.position.set(0, 14, -20)
             chouYouYanJi1.name="chouYouYanJi1Name"  
             scene.add(chouYouYanJi1)                                              
         });
-        loader.load('../fbx/消毒柜new_top_asm_asm1.fbx',function(object){
+        loader.load('./fbx/消毒柜new_top_asm_asm1.fbx',function(object){
             object.scale.multiplyScalar(.05) //模型大小缩放            
             chouYouYanJi2 = object;
             chouYouYanJi2.position.copy(chouYouYanJi1.position)
             chouYouYanJi2.name="chouYouYanJi2Name"                                          
         });
-        loader.load('../fbx/cxw200ccd03_asm_asm.fbx',function(object){
+        loader.load('./fbx/cxw200ccd03_asm_asm.fbx',function(object){
             object.scale.multiplyScalar(.3) //模型大小缩放            
             chouYouYanJi3 = object;
             // chouYouYanJi3.position.copy(chouYouYanJi1.position)
@@ -379,22 +379,22 @@
         <div class="row-box row" id="zaoJu">
             <div id="zaoJu1Title" class="img-text-box col-md-4">
                 <div class="img-box " id="zaoJu1Id" onclick="change(zaoJu1,'zaoJu1Id')">
-                    <img class="switch-img" src="../image/消-811.png" alt="灶具1" style="height:100%">
-                    <img class="selected" src="../image/select.png" alt="选择图">
+                    <img class="switch-img" src="./image/消-811.png" alt="灶具1" style="height:100%">
+                    <img class="selected" src="./image/select.png" alt="选择图">
                 </div>
                 <div class="switch-name">灶具1</div>
             </div>
             <div id="zaoJu2Title" class="img-text-box col-md-4">
                 <div class="img-box " id="zaoJu2Id" onclick="change(zaoJu2,'zaoJu2Id')">
-                    <img class="switch-img" src="../image/消-817.png" alt="灶具2" style="height:100%">
-                    <img class="selected" src="../image/select.png" alt="选择图">
+                    <img class="switch-img" src="./image/消-817.png" alt="灶具2" style="height:100%">
+                    <img class="selected" src="./image/select.png" alt="选择图">
                 </div>
                 <div class="switch-name">灶具2</div>
             </div>
             <div id="zaoJu3Title" class="img-text-box col-md-4">
                 <div class="img-box " id="zaoJu3Id" onclick="change(zaoJu3,'zaoJu3Id')">
-                    <img class="switch-img" src="../image/消-825.png" alt="灶具3" style="height:100%">
-                    <img class="selected" src="../image/select.png" alt="选择图">
+                    <img class="switch-img" src="./image/消-825.png" alt="灶具3" style="height:100%">
+                    <img class="selected" src="./image/select.png" alt="选择图">
                 </div>
                 <div class="switch-name">灶具3</div>
             </div>
@@ -403,22 +403,22 @@
         <div class="row-box row" id="guiZi">
             <div id="guiZi1Title" class="img-text-box col-md-4">
                 <div class="img-box " id="guiZi1Id" onclick="change(guiZi1,'guiZi1Id')">
-                    <img class="switch-img" src="../image/灶-9b20.png" alt="柜子1" style="height:100%">
-                    <img class="selected" src="../image/select.png" alt="选择图">
+                    <img class="switch-img" src="./image/灶-9b20.png" alt="柜子1" style="height:100%">
+                    <img class="selected" src="./image/select.png" alt="选择图">
                 </div>
                 <div class="switch-name">柜子1</div>
             </div>
             <div id="guiZi2Title" class="img-text-box col-md-4">
                 <div class="img-box " id="guiZi2Id" onclick="change(guiZi2,'guiZi2Id')">
-                    <img class="switch-img" src="../image/灶-9b52.png" alt="柜子2" style="height:100%">
-                    <img class="selected" src="../image/select.png" alt="选择图">
+                    <img class="switch-img" src="./image/灶-9b52.png" alt="柜子2" style="height:100%">
+                    <img class="selected" src="./image/select.png" alt="选择图">
                 </div>
                 <div class="switch-name">柜子2</div>
             </div>
             <div id="guiZi3Title" class="img-text-box col-md-4">
                 <div class="img-box " id="guiZi3Id" onclick="change(guiZi3,'guiZi3Id')">
-                    <img class="switch-img" src="../image/灶-9g53.png" alt="柜子3" style="height:100%">
-                    <img class="selected" src="../image/select.png" alt="选择图">
+                    <img class="switch-img" src="./image/灶-9g53.png" alt="柜子3" style="height:100%">
+                    <img class="selected" src="./image/select.png" alt="选择图">
                 </div>
                 <div class="switch-name">柜子3</div>
             </div>
@@ -427,22 +427,22 @@
         <div class="row-box row" id="chouYouYanJi">
             <div id="chouYouYanJi1Title" class="img-text-box col-md-4">
                 <div class="img-box " id="chouYouYanJi1Id" onclick="change(chouYouYanJi1,'chouYouYanJi1Id')">
-                    <img class="switch-img" src="../image/烟-5900s.png" alt="抽油烟机1" style="height:100%">
-                    <img class="selected" src="../image/select.png" alt="选择图">
+                    <img class="switch-img" src="./image/烟-5900s.png" alt="抽油烟机1" style="height:100%">
+                    <img class="selected" src="./image/select.png" alt="选择图">
                 </div>
                 <div class="switch-name">抽油烟机1</div>
             </div>
             <div id="chouYouYanJi2Title" class="img-text-box col-md-4">
                 <div class="img-box " id="chouYouYanJi2Id" onclick="change(chouYouYanJi2,'chouYouYanJi2Id')">
-                    <img class="switch-img" src="../image/烟-8229S.png" alt="抽油烟机2" style="height:100%">
-                    <img class="selected" src="../image/select.png" alt="选择图">
+                    <img class="switch-img" src="./image/烟-8229S.png" alt="抽油烟机2" style="height:100%">
+                    <img class="selected" src="./image/select.png" alt="选择图">
                 </div>
                 <div class="switch-name">抽油烟机2</div>
             </div>
             <div id="chouYouYanJi3Title" class="img-text-box col-md-4">
                 <div class="img-box " id="chouYouYanJi3Id" onclick="change(chouYouYanJi3,'chouYouYanJi3Id')">
-                    <img class="switch-img" src="../image/烟-8332.png" alt="抽油烟机3" style="height:100%">
-                    <img class="selected" src="../image/select.png" alt="选择图">
+                    <img class="switch-img" src="./image/烟-8332.png" alt="抽油烟机3" style="height:100%">
+                    <img class="selected" src="./image/select.png" alt="选择图">
                 </div>
                 <div class="switch-name">抽油烟机3</div>
             </div>
