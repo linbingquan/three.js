@@ -14,6 +14,7 @@
     <script src="../../examples/js/curves/NURBSUtils.js"></script>
     <script src="../../examples/js/loaders/FBXLoader.js"></script>
     <script src="../../examples/js/objects/Reflector.js"></script>
+    <script src="../../examples/js/libs/tween.min.js"></script>
     <script src="./js/jquery-3.3.1.min.js"></script>
     <link rel="stylesheet" href="./css/bootstrap.min.css">
     <style>
@@ -206,6 +207,25 @@
                 intersectedObj = intersected.object.parent;
                 var { x, y, z } = intersectedObj.position;
                 camera.lookAt(x, y, z);
+
+                // control.target = intersectedObj.position;
+
+                // var coords = { offsetGlobalCamera: offsetGlobalCamera, widthGlobalCamera: widthGlobalCamera };
+                new TWEEN.Tween(control.target)
+                    .to({
+                        x: intersectedObj.position.x,
+                        // y: intersectedObj.position.y,
+                        // z: intersectedObj.position.z
+                    }, 1000)
+                    .onUpdate(function () {
+                        control.enableRotate = false;
+                    })
+                    .onComplete(function () {
+                        control.enableRotate = true;
+                    })
+                    .easing(TWEEN.Easing.Linear.None)
+                    .start();
+
             } else {
                 $("#jsSelectBox").hide();
             }
@@ -352,6 +372,7 @@
         var animate = function () {
             requestAnimationFrame(animate);
             control.update();
+            TWEEN.update();
 
             renderer.render(scene, camera);
         }
