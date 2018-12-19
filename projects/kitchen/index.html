@@ -116,25 +116,6 @@
 
         });
 
-        loader.load('./models/xztd105a-01.fbx', function (object) {
-
-            // bugfixed
-            object.children.forEach(child => {
-                if (child.material) {
-                    child.material.side = THREE.DoubleSide;
-                }
-                //设置模型生成阴影并接收阴影
-                child.castShadow = true;
-                // child.receiveShadow = true;
-            });
-
-            object.name = "xztd105a-01";
-            object.position.set(100, 70, 0);
-            object.scale.set(0.2, 0.2, 0.2);
-            scene.add(object);
-
-        });
-
         loader.load('./models/cxw-200-tcd02.fbx', function (object) {
 
             // bugfixed
@@ -148,8 +129,27 @@
             });
 
             object.name = "cxw-200-tcd02";
-            object.position.set(300, 70, 0);
+            object.position.set(100, 70, 0);
             object.scale.set(0.5, 0.5, 0.5);
+            scene.add(object);
+
+        });
+
+        loader.load('./models/xztd105a-01.fbx', function (object) {
+
+            // bugfixed
+            object.children.forEach(child => {
+                if (child.material) {
+                    child.material.side = THREE.DoubleSide;
+                }
+                //设置模型生成阴影并接收阴影
+                child.castShadow = true;
+                // child.receiveShadow = true;
+            });
+
+            object.name = "xztd105a-01";
+            object.position.set(300, 70, 0);
+            object.scale.set(0.2, 0.2, 0.2);
             scene.add(object);
 
         });
