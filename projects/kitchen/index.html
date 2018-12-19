@@ -5,16 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
-    <script src="../../build/three.js"></script>
-    <script src="../../examples/js/controls/OrbitControls.js"></script>
+    <script src="./build/three.js"></script>
+    <script src="./examples/js/controls/OrbitControls.js"></script>
     
-    <script src="../../examples/js/libs/inflate.min.js"></script>
+    <script src="./examples/js/libs/inflate.min.js"></script>
     <!-- <script src="../../examples/js/loaders/NRRDLoader.js"></script> -->
-    <script src="../../examples/js/curves/NURBSCurve.js"></script>
-    <script src="../../examples/js/curves/NURBSUtils.js"></script>
-    <script src="../../examples/js/loaders/FBXLoader.js"></script>
-    <script src="../../examples/js/objects/Reflector.js"></script>
-    <script src="../../examples/js/libs/tween.min.js"></script>
+    <script src="./examples/js/curves/NURBSCurve.js"></script>
+    <script src="./examples/js/curves/NURBSUtils.js"></script>
+    <script src="./examples/js/loaders/FBXLoader.js"></script>
+    <script src="./examples/js/objects/Reflector.js"></script>
+    <script src="./examples/js/libs/tween.min.js"></script>
     <script src="./js/jquery-3.3.1.min.js"></script>
     <link rel="stylesheet" href="./css/bootstrap.min.css">
     <style>
@@ -353,7 +353,7 @@
         function initSceneBG() {
 
             var envMap = new THREE.CubeTextureLoader()
-                .setPath( '../../examples/textures/cube/skyboxsun25deg/')
+                .setPath( './examples/textures/cube/skyboxsun25deg/')
                 .load( [ 'px.jpg', 'nx.jpg', 'py.jpg', 'ny.jpg', 'pz.jpg', 'nz.jpg' ] );
 
             scene.background = envMap;
