@@ -33,8 +33,14 @@
         // var camera = new THREE.OrthographicCamera(window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, 1, 1000);
 
         var control = new THREE.OrbitControls(camera);
-        control.autoRotate = true;
+        // control.autoRotate = true;
         control.autoRotateSpeed = 1;
+        control.enablePan = false;
+        control.enableZoom = false;
+        control.minPolarAngle = Math.PI / 4; // 垂直高度上方
+        control.maxPolarAngle = Math.PI / 2 - 0.01; // 垂直高度下方
+        control.minAzimuthAngle = - Math.PI / 4; // radians
+	    control.maxAzimuthAngle = Math.PI / 4; // radians
 
         var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
@@ -158,7 +164,7 @@
         plane.name = "ground";
         scene.add(plane);
 
-        camera.position.set(0, 70, 250);
+        camera.position.set(0, 90, 400);
 
         function onDocumentMouseDown( event ) {
 
@@ -220,6 +226,109 @@
             });
         }
 
+        function handleLoad_CXW200CCS02() {
+
+            loader.load('./models/cxw-200-ccs02.fbx', function (object) {
+
+                // bugfixed
+                object.children.forEach(child => {
+                    if (child.material) {
+                        child.material.side = THREE.DoubleSide;
+                        child.rotation.x = THREE.Math.degToRad( 90 );
+                    }
+                    //设置模型生成阴影并接收阴影
+                    child.castShadow = true;
+                    // child.receiveShadow = true;
+                });
+
+                object.name = "cxw-200-ccs02";
+
+                // 复制位置和替换
+                copyPositionAndReplace(object);
+
+            });
+        }
+
+        function handleLoad_CXW200CCS01A() {
+
+            loader.load('./models/cxw-200-ccs01a.fbx', function (object) {
+
+                // bugfixed
+                object.children.forEach(child => {
+                    if (child.material) {
+                        child.material.side = THREE.DoubleSide;
+                        child.rotation.x = THREE.Math.degToRad( 90 );
+                    }
+                    //设置模型生成阴影并接收阴影
+                    child.castShadow = true;
+                    // child.receiveShadow = true;
+                });
+
+                object.name = "cxw-200-ccs01a";
+
+                // 复制位置和替换
+                copyPositionAndReplace(object);
+
+            });
+        }
+
+        function handleLoad_CXW200TCD02() {
+            
+            loader.load('./models/cxw-200-tcd02.fbx', function (object) {
+
+                // bugfixed
+                object.children.forEach(child => {
+                    if (child.material) {
+                        child.material.side = THREE.DoubleSide;
+                    }
+                    //设置模型生成阴影并接收阴影
+                    child.castShadow = true;
+                    // child.receiveShadow = true;
+                });
+
+                object.name = "cxw-200-tcd02";
+                object.scale.set(0.5, 0.5, 0.5);
+
+                // 复制位置和替换
+                copyPositionAndReplace(object);
+
+            });
+        }
+
+        function handleLoad_XZTD105A01() {
+            
+            loader.load('./models/xztd105a-01.fbx', function (object) {
+
+                // bugfixed
+                object.children.forEach(child => {
+                    if (child.material) {
+                        child.material.side = THREE.DoubleSide;
+                    }
+                    //设置模型生成阴影并接收阴影
+                    child.castShadow = true;
+                    // child.receiveShadow = true;
+                });
+
+                object.name = "xztd105a-01";
+                object.scale.set(0.2, 0.2, 0.2);
+
+                // 复制位置和替换
+                copyPositionAndReplace(object);
+
+            });
+        }
+
+        // 复制位置和替换
+        function copyPositionAndReplace(object) {
+            // 复制位置
+            var { x, y, z } = intersectedObj.position;
+            object.position.set(x, y, z);
+            scene.add(object);
+
+            scene.remove(intersectedObj); // 删除选中对象
+            intersectedObj = object;
+        }
+
         // 设置场景背景
         function initSceneBG() {
 
@@ -267,25 +376,25 @@
     <div id="jsSelectBox" class="fixed-bottom white-bg" style="display: none;">
         <div class="row justity-content-center">
             <div class="col">
-                <div class="card gree-prod" onclick="handleLoadObj('cxw-200-ccs02')">
+                <div class="card gree-prod" onclick="handleLoad_CXW200CCS02()">
                     <img class="prod-img" src="./image/cxw-200-ccs02.png" alt="">
                     <div class="prod-txt">cxw-200-ccs02</div>
                 </div>
             </div>
             <div class="col">
-                <div class="card gree-prod" onclick="handleLoadObj('cxw-200-ccs01a')">
+                <div class="card gree-prod" onclick="handleLoad_CXW200CCS01A()">
                     <img class="prod-img" src="./image/cxw-200-ccs01a.png" alt="">
                     <div class="prod-txt">cxw-200-ccs01a</div>
                 </div>
             </div>
             <div class="col">
-                <div class="card gree-prod" onclick="handleLoadObj('cxw-200-tcd02')">
+                <div class="card gree-prod" onclick="handleLoad_CXW200TCD02()">
                     <img class="prod-img" src="./image/cxw-200-tcd02.png" alt="">
                     <div class="prod-txt">cxw-200-tcd02</div>
                 </div>
             </div>
             <div class="col">
-                <div class="card gree-prod" onclick="handleLoadObj('xztd105a-01')">
+                <div class="card gree-prod" onclick="handleLoad_XZTD105A01()">
                     <img class="prod-img" src="./image/xztd105a-01.png" alt="">
                     <div class="prod-txt">xztd105a-01</div>
                 </div>
