@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
-    <script src="./build/three.js"></script>
+    <script src="./build/three.min.js"></script>
+    <script src="./examples/js/WebGL.js"></script>
     <script src="./examples/js/controls/OrbitControls.js"></script>
     
     <script src="./examples/js/libs/inflate.min.js"></script>
@@ -29,6 +30,12 @@
 </head>
 <body>
     <script>
+        if ( WEBGL.isWebGLAvailable() === false ) {
+    
+            document.body.appendChild( WEBGL.getWebGLErrorMessage() );
+    
+        }
+
         var scene = new THREE.Scene();
         var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         // var camera = new THREE.OrthographicCamera(window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, 1, 1000);
