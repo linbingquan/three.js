@@ -15,6 +15,7 @@
     <script src="./examples/js/curves/NURBSUtils.js"></script>
     <script src="./examples/js/loaders/FBXLoader.js"></script>
     <script src="./examples/js/objects/Reflector.js"></script>
+    <script src="./examples/js/libs/stats.min.js"></script>
     <script src="./examples/js/libs/tween.min.js"></script>
     <script src="./js/jquery-3.3.1.min.js"></script>
     <link rel="stylesheet" href="./css/bootstrap.min.css">
@@ -57,6 +58,13 @@
 
         // 挂载节点
         document.body.appendChild(renderer.domElement);
+
+        var stats = new Stats();
+        // stats.setMode(1);
+        stats.domElement.style.position = 'absolute';
+        stats.domElement.left = '0px';
+        stats.domElement.top = '0px';
+        document.body.appendChild(stats.domElement);
 
         var raycaster = new THREE.Raycaster();
         var mouse = new THREE.Vector2(); // 鼠标移动位置
@@ -380,6 +388,7 @@
             requestAnimationFrame(animate);
             control.update();
             TWEEN.update();
+            stats.update();
 
             renderer.render(scene, camera);
         }
