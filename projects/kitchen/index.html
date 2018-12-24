@@ -93,13 +93,15 @@
         scene.add( directionalLight );
 
         var loader = new THREE.FBXLoader();
-        loader.load('./models/cxw-200-ccs02.fbx', function (object) {
+
+        loader.load('./models/cxw-200-ccs02-geometry.fbx', function (object) {
 
             // bugfixed
             object.children.forEach(child => {
                 if (child.material) {
                     child.material.side = THREE.DoubleSide;
-                    child.rotation.x = THREE.Math.degToRad( 90 );
+                    var texture = new THREE.TextureLoader().load('./models/cxw-200-ccs02-texture-1024.jpg');
+                    child.material.map = texture;
                 }
                 //设置模型生成阴影并接收阴影
                 child.castShadow = true;
@@ -107,7 +109,7 @@
             });
 
             object.name = "cxw-200-ccs02";
-            object.position.set(-300, 70, 0);
+            object.position.set(-300, 10, 0);
             scene.add(object);
 
         });
@@ -310,13 +312,14 @@
 
         function handleLoad_CXW200CCS02() {
 
-            loader.load('./models/cxw-200-ccs02.fbx', function (object) {
+            loader.load('./models/cxw-200-ccs02-geometry.fbx', function (object) {
 
                 // bugfixed
                 object.children.forEach(child => {
                     if (child.material) {
                         child.material.side = THREE.DoubleSide;
-                        child.rotation.x = THREE.Math.degToRad( 90 );
+                        var texture = new THREE.TextureLoader().load('./models/cxw-200-ccs02-texture-1024.jpg');
+                        child.material.map = texture;
                     }
                     //设置模型生成阴影并接收阴影
                     child.castShadow = true;
@@ -333,13 +336,14 @@
 
         function handleLoad_CXW200CCS01A() {
 
-            loader.load('./models/cxw-200-ccs01a.fbx', function (object) {
+            loader.load('./models/cxw-200-ccs01a-geometry.fbx', function (object) {
 
                 // bugfixed
                 object.children.forEach(child => {
                     if (child.material) {
                         child.material.side = THREE.DoubleSide;
-                        child.rotation.x = THREE.Math.degToRad( 90 );
+                        var texture = new THREE.TextureLoader().load('./models/cxw-200-ccs01a-texture-1024.jpg');
+                        child.material.map = texture;
                     }
                     //设置模型生成阴影并接收阴影
                     child.castShadow = true;
