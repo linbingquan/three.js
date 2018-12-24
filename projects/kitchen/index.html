@@ -200,12 +200,14 @@
 
         });
 
-        loader.load('./models/xztd105a-01.fbx', function (object) {
+        loader.load('./models/xztd105a-01-geometry.fbx', function (object) {
 
             // bugfixed
             object.children.forEach(child => {
                 if (child.material) {
                     child.material.side = THREE.DoubleSide;
+                    var texture = new THREE.TextureLoader().load('./models/xztd105a-01-texture-1024.jpg');
+                    child.material.map = texture;
                 }
                 //设置模型生成阴影并接收阴影
                 child.castShadow = true;
@@ -213,8 +215,7 @@
             });
 
             object.name = "xztd105a-01";
-            object.position.set(300, 70, 0);
-            object.scale.set(0.2, 0.2, 0.2);
+            object.position.set(300, 10, 0);
             scene.add(object);
 
         });
@@ -385,12 +386,14 @@
 
         function handleLoad_XZTD105A01() {
             
-            loader.load('./models/xztd105a-01.fbx', function (object) {
+            loader.load('./models/xztd105a-01-geometry.fbx', function (object) {
 
                 // bugfixed
                 object.children.forEach(child => {
                     if (child.material) {
                         child.material.side = THREE.DoubleSide;
+                        var texture = new THREE.TextureLoader().load('./models/xztd105a-01-texture-1024.jpg');
+                        child.material.map = texture;
                     }
                     //设置模型生成阴影并接收阴影
                     child.castShadow = true;
@@ -398,7 +401,6 @@
                 });
 
                 object.name = "xztd105a-01";
-                object.scale.set(0.2, 0.2, 0.2);
 
                 // 复制位置和替换
                 copyPositionAndReplace(object);
