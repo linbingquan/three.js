@@ -158,6 +158,28 @@
 
         });
 
+        loader.load('./models/L1PB26-G24-A2-geometry.fbx', function (object) {
+
+            // bugfixed
+            object.children.forEach(child => {
+                if (child.material) {
+                    child.material.side = THREE.DoubleSide;
+                    var texture = new THREE.TextureLoader().load('./models/L1PB26-G24-A2-texture-1024.jpg');
+                    child.material.map = texture;
+                }
+                //设置模型生成阴影并接收阴影
+                child.castShadow = true;
+                // child.receiveShadow = true;
+            });
+
+            object.scale.set(0.15, 0.15, 0.15);
+
+            object.name = "L1PB26-G24-A2";
+            object.position.set(-150, 2, 200);
+            scene.add(object);
+
+        });
+
         loader.load('./models/cxw-200-ccs01a-geometry.fbx', function (object) {
 
             // bugfixed
