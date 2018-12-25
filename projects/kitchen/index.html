@@ -129,8 +129,6 @@
                 // child.receiveShadow = true;
             });
 
-            object.scale.set(0.3, 0.3, 0.3);
-
             object.name = "jzx-qs02b";
             object.position.set(0, 30, 200);
             scene.add(object);
@@ -141,10 +139,12 @@
 
             // bugfixed
             object.children.forEach(child => {
-                if (child.material) {
-                    child.material.side = THREE.DoubleSide;
+                if (child.material[1]) {
+                    child.material[0].side = THREE.DoubleSide;
+                    child.material[1].side = THREE.DoubleSide;
                     var texture = new THREE.TextureLoader().load('./models/jzy-qs03b-texture-1024.jpg');
-                    child.material.map = texture;
+                    child.material[0].map = texture;
+                    child.material[1].map = texture;
                     child.rotation.y = THREE.Math.degToRad( 180 );
                 }
                 //设置模型生成阴影并接收阴影
@@ -152,10 +152,8 @@
                 // child.receiveShadow = true;
             });
 
-            object.scale.set(0.3, 0.3, 0.3);
-
             object.name = "jzy-qs03b";
-            object.position.set(300, 30, 200);
+            object.position.set(150, 30, 200);
             scene.add(object);
 
         });
