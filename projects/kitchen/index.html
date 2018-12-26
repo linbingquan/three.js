@@ -272,6 +272,26 @@
 
         });
 
+        loader.load('./models/xztd105a-03-geometry.fbx', function (object) {
+
+            // bugfixed
+            object.children.forEach(child => {
+                if (child.material) {
+                    child.material.side = THREE.DoubleSide;
+                    var texture = new THREE.TextureLoader().load('./models/xztd105a-03-texture-1024.jpg');
+                    child.material.map = texture;
+                }
+                //设置模型生成阴影并接收阴影
+                child.castShadow = true;
+                // child.receiveShadow = true;
+            });
+
+            object.name = "xztd105a-03";
+            object.position.set(-300, 2, 200);
+            scene.add(object);
+
+        });
+
         // 地面
         var geometry = new THREE.PlaneGeometry(5000, 5000);
         var material = new THREE.MeshLambertMaterial({ color: 0xcccccc });
