@@ -212,6 +212,26 @@
 
         });
 
+        loader.load('./models/cxw-200-tcd01-geometry.fbx', function (object) {
+
+            // bugfixed
+            object.children.forEach(child => {
+                if (child.material[0]) {
+                    child.material[0].side = THREE.DoubleSide;
+                    var texture = new THREE.TextureLoader().load('./models/cxw-200-tcd01-texture-1024.jpg');
+                    child.material[0].map = texture;
+                }
+                //设置模型生成阴影并接收阴影
+                child.castShadow = true;
+                // child.receiveShadow = true;
+            });
+
+            object.name = "cxw-200-tcd01";
+            object.position.set(300, 10, 0);
+            scene.add(object);
+
+        });
+
         loader.load('./models/cxw-200-tcd02-geometry.fbx', function (object) {
 
             // bugfixed
