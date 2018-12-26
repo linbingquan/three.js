@@ -428,6 +428,58 @@
             });
         }
 
+        function handleLoad_JZXQS02B() {
+
+            loader.load('./models/jzx-qs02b-geometry.fbx', function (object) {
+
+                // bugfixed
+                object.children.forEach(child => {
+                    if (child.material) {
+                        child.material.side = THREE.DoubleSide;
+                        var texture = new THREE.TextureLoader().load('./models/jzx-qs02b-texture-1024.jpg');
+                        child.material.map = texture;
+                    }
+                    //设置模型生成阴影并接收阴影
+                    child.castShadow = true;
+                    // child.receiveShadow = true;
+                });
+
+                object.name = "jzx-qs02b";
+
+                // 复制位置和替换
+                copyPositionAndReplace(object);
+
+            });
+        }
+
+        function handleLoad_JZXQS03B() {
+
+            loader.load('./models/jzy-qs03b-geometry.fbx', function (object) {
+
+                // bugfixed
+                object.children.forEach(child => {
+                    if (child.material[1]) {
+                        child.material[0].side = THREE.DoubleSide;
+                        child.material[1].side = THREE.DoubleSide;
+                        var texture = new THREE.TextureLoader().load('./models/jzy-qs03b-texture-1024.jpg');
+                        child.material[0].map = texture;
+                        child.material[1].map = texture;
+                        // child.rotation.y = THREE.Math.degToRad( 180 );
+                    }
+                    //设置模型生成阴影并接收阴影
+                    child.castShadow = true;
+                    // child.receiveShadow = true;
+                });
+
+                object.name = "jzy-qs03b";
+
+                // 复制位置和替换
+                copyPositionAndReplace(object);
+
+            });
+        }
+
+
         // 复制位置和替换
         function copyPositionAndReplace(object) {
             // 复制位置
@@ -509,6 +561,18 @@
                 <div class="card gree-prod" onclick="handleLoad_XZTD105A01()">
                     <img class="prod-img" src="./image/xztd105a-01.png" alt="">
                     <div class="prod-txt">xztd105a-01</div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card gree-prod" onclick="handleLoad_JZXQS02B()">
+                    <img class="prod-img" src="./image/jzx-qs02b.png" alt="">
+                    <div class="prod-txt">jzx-qs02b</div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card gree-prod" onclick="handleLoad_JZXQS03B()">
+                    <img class="prod-img" src="./image/jzy-qs03b.png" alt="">
+                    <div class="prod-txt">jzy-qs03b</div>
                 </div>
             </div>
         </div>
