@@ -38,7 +38,7 @@
         }
 
         var scene = new THREE.Scene();
-        var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
         // var camera = new THREE.OrthographicCamera(window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, 1, 1000);
 
         var control = new THREE.OrbitControls(camera);
@@ -120,7 +120,7 @@
             object.children.forEach(child => {
                 if (child.material) {
                     child.material.side = THREE.DoubleSide;
-                    var texture = new THREE.TextureLoader().load('./models/jzx-qs02b-texture-1024.png');
+                    var texture = new THREE.TextureLoader().load('./models/jzx-qs02b-texture-1024.jpg');
                     child.material.map = texture;
                     // child.rotation.y = THREE.Math.degToRad( 180 );
                 }
@@ -241,7 +241,7 @@
         });
 
         // 地面
-        var geometry = new THREE.PlaneGeometry(1000, 1000);
+        var geometry = new THREE.PlaneGeometry(5000, 5000);
         var material = new THREE.MeshLambertMaterial({ color: 0xcccccc });
         material.side = THREE.DoubleSide;
         var plane = new THREE.Mesh(geometry, material);
