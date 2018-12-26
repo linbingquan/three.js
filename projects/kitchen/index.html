@@ -142,7 +142,7 @@
             });
 
             object.name = "jzx-qs02b";
-            object.position.set(0, 2, 200);
+            object.position.set(100, 2, 200);
             scene.add(object);
 
         });
@@ -165,32 +165,32 @@
             });
 
             object.name = "jzy-qs03b";
-            object.position.set(150, 2, 200);
+            object.position.set(300, 2, 200);
             scene.add(object);
 
         });
 
-        loader.load('./models/L1PB26-G24-A2-geometry.fbx', function (object) {
+        // loader.load('./models/L1PB26-G24-A2-geometry.fbx', function (object) {
 
-            // bugfixed
-            object.children.forEach(child => {
-                if (child.material) {
-                    child.material.side = THREE.DoubleSide;
-                    var texture = new THREE.TextureLoader().load('./models/L1PB26-G24-A2-texture-1024.jpg');
-                    child.material.map = texture;
-                }
-                //设置模型生成阴影并接收阴影
-                child.castShadow = true;
-                // child.receiveShadow = true;
-            });
+        //     // bugfixed
+        //     object.children.forEach(child => {
+        //         if (child.material) {
+        //             child.material.side = THREE.DoubleSide;
+        //             var texture = new THREE.TextureLoader().load('./models/L1PB26-G24-A2-texture-1024.jpg');
+        //             child.material.map = texture;
+        //         }
+        //         //设置模型生成阴影并接收阴影
+        //         child.castShadow = true;
+        //         // child.receiveShadow = true;
+        //     });
 
-            object.scale.set(0.15, 0.15, 0.15);
+        //     object.scale.set(0.15, 0.15, 0.15);
 
-            object.name = "L1PB26-G24-A2";
-            object.position.set(-100, 2, 200);
-            scene.add(object);
+        //     object.name = "L1PB26-G24-A2";
+        //     object.position.set(-100, 2, 200);
+        //     scene.add(object);
 
-        });
+        // });
 
         loader.load('./models/cxw-200-ccs01a-geometry.fbx', function (object) {
 
@@ -267,7 +267,7 @@
             });
 
             object.name = "xztd105a-01";
-            object.position.set(-200, 2, 200);
+            object.position.set(-100, 2, 200);
             scene.add(object);
 
         });
@@ -303,7 +303,7 @@
         plane.name = "ground";
         scene.add(plane);
 
-        camera.position.set(0, 90, 400);
+        camera.position.set(0, 90, 500);
 
         function onDocumentMouseDown( event ) {
 
