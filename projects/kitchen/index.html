@@ -22,6 +22,7 @@
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <style>
         body { overflow: hidden; margin: 0; padding: 0; }
+        .fs12 { font-size: 12px; }
 
         .white-bg { padding: 20px; background: rgba(255, 255, 255, 0.6); border-top: 1px solid rgba(0, 0, 0, .125); }
         .gree-prod { margin: 0 auto; padding: 20px; width: 190px; cursor: pointer; }
@@ -295,6 +296,7 @@
         function handleSelectObj( intersected ) {
             if (intersected) {
                 $("#jsSelectBox").show();
+                $("#jsVersion").hide();
                 $("#jsSelectBox").mouseenter(function () {
                     document.removeEventListener( 'mousedown', onDocumentMouseDown, false );
                 });
@@ -325,6 +327,7 @@
 
             } else {
                 $("#jsSelectBox").hide();
+                $("#jsVersion").show();
             }
         }
 
@@ -588,5 +591,6 @@
             </div>
         </div>
     </div>
+    <div id="jsVersion" class="fixed-bottom text-muted text-center fs12">V0.0.1 build 1226</div>
 </body>
 </html>
