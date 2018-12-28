@@ -142,7 +142,7 @@
             });
 
             object.name = "jzx-qs02b";
-            object.position.set(100, 2, 200);
+            object.position.set(0, 0, 300);
             scene.add(object);
 
         });
@@ -165,7 +165,7 @@
             });
 
             object.name = "jzy-qs03b";
-            object.position.set(300, 2, 200);
+            object.position.set(0, 95, 0);
             scene.add(object);
 
         });
@@ -207,7 +207,7 @@
             });
 
             object.name = "cxw-200-ccs01a";
-            object.position.set(-100, 10, 0);
+            object.position.set(130, 0, 200);
             scene.add(object);
 
         });
@@ -247,7 +247,7 @@
             });
 
             object.name = "cxw-200-tcd02";
-            object.position.set(100, 10, 0);
+            object.position.set(0, 180, 0);
             scene.add(object);
 
         });
@@ -267,7 +267,7 @@
             });
 
             object.name = "xztd105a-01";
-            object.position.set(-100, 2, 200);
+            object.position.set(-130, 0, 200);
             scene.add(object);
 
         });
@@ -287,23 +287,32 @@
             });
 
             object.name = "xztd105a-03";
-            object.position.set(-300, 2, 200);
+            object.position.set(0, 6.5, 0.3);
             scene.add(object);
 
         });
 
-        // 地面
-        var geometry = new THREE.PlaneGeometry(5000, 5000);
-        var material = new THREE.MeshLambertMaterial({ color: 0xcccccc });
-        material.side = THREE.DoubleSide;
-        var plane = new THREE.Mesh(geometry, material);
-        plane.rotation.x = -Math.PI / 2;
-        // plane.position.y = -70;
-        plane.receiveShadow = true;
-        plane.name = "ground";
-        scene.add(plane);
+        function createPlane() {
+            // 地面
+            var geometry = new THREE.PlaneGeometry(5000, 5000);
+            var material = new THREE.MeshLambertMaterial({ color: 0xcccccc });
+            material.side = THREE.DoubleSide;
+            var plane = new THREE.Mesh(geometry, material);
+            plane.rotation.x = -Math.PI / 2;
+            // plane.position.y = -70;
+            plane.receiveShadow = true;
+            plane.name = "ground";
+            scene.add(plane);
+        }
 
-        camera.position.set(0, 90, 500);
+        function createCube() {
+            var geometry = new THREE.BoxGeometry( 200, 100, 100 );
+            var material = new THREE.MeshLambertMaterial({ color: 0xcecece });
+            var mesh = new THREE.Mesh(geometry, material);
+            mesh.position.set(0, 55, 0);
+            mesh.castShadow = true;
+            scene.add(mesh);
+        }
 
         function onDocumentMouseDown( event ) {
 
@@ -613,6 +622,9 @@
         }
         window.addEventListener('resize', onWindowResize, false);
 
+        // 摄像机位置
+        camera.position.set(0, 150, 500);
+
         var animate = function () {
             requestAnimationFrame(animate);
             control.update();
@@ -622,6 +634,8 @@
             renderer.render(scene, camera);
         }
         initSceneBG();
+        createCube();
+        createPlane();
         animate();
 
         document.addEventListener( 'dragover', function ( event ) {
