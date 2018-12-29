@@ -121,7 +121,7 @@
             });
 
             object.name = "cxw-200-ccs02";
-            object.position.set(-300, 10, 0);
+            object.position.set( -150, 160, -43 );
             scene.add(object);
 
         });
@@ -142,7 +142,7 @@
             });
 
             object.name = "jzx-qs02b";
-            object.position.set(0, 0, 300);
+            object.position.set( 180, 78, 0 );
             scene.add(object);
 
         });
@@ -165,7 +165,7 @@
             });
 
             object.name = "jzy-qs03b";
-            object.position.set(0, 95, 0);
+            object.position.set(0, 78, 0);
             scene.add(object);
 
         });
@@ -207,7 +207,7 @@
             });
 
             object.name = "cxw-200-ccs01a";
-            object.position.set(130, 0, 200);
+            object.position.set( 180, 160, -43 );
             scene.add(object);
 
         });
@@ -227,7 +227,8 @@
             });
 
             object.name = "cxw-200-tcd01";
-            object.position.set(300, 10, 0);
+            object.rotation.y = THREE.Math.degToRad( -90 );
+            object.position.set( 350, 160, 280 );
             scene.add(object);
 
         });
@@ -247,7 +248,7 @@
             });
 
             object.name = "cxw-200-tcd02";
-            object.position.set(0, 180, 0);
+            object.position.set(0, 160, 2);
             scene.add(object);
 
         });
@@ -267,7 +268,7 @@
             });
 
             object.name = "xztd105a-01";
-            object.position.set(-130, 0, 200);
+            object.position.set( 180, 14, 0.46);
             scene.add(object);
 
         });
@@ -287,15 +288,60 @@
             });
 
             object.name = "xztd105a-03";
-            object.position.set(0, 6.5, 0.3);
+            object.position.set(0, 14, 0.46);
             scene.add(object);
+
+        });
+
+        loader.load('./models/sark-geometry.fbx', function (object) {
+
+            // bugfixed
+            object.children.forEach(child => {
+                if (child.material) {
+                    child.material.side = THREE.DoubleSide;
+                    // var texture = new THREE.TextureLoader().load('./models/sark-texture-1024.jpg');
+                    // child.material.map = texture;
+                }
+                //设置模型生成阴影并接收阴影
+                child.castShadow = true;
+                // child.receiveShadow = true;
+            });
+
+            object.name = "sark-geometry";
+            object.position.set(350, 0, 200);
+            scene.add(object);
+
+            // 复制柜子
+            var obj3d = object.clone();
+            obj3d.position.z += 59;
+            scene.add(obj3d);
+
+            // 复制柜子
+            object = obj3d;
+            var obj3d = object.clone();
+            obj3d.position.z += 59;
+            scene.add(obj3d);
+
+            // 复制柜子
+            object = obj3d;
+            var obj3d = object.clone();
+            obj3d.position.z += 59;
+            scene.add(obj3d);
 
         });
 
         function createPlane() {
             // 地面
-            var geometry = new THREE.PlaneGeometry(5000, 5000);
-            var material = new THREE.MeshLambertMaterial({ color: 0xcccccc });
+            var geometry = new THREE.PlaneGeometry(1500, 1500);
+            
+            var texture = new THREE.TextureLoader().load('./texture/floor.jpg');
+            texture.wrapS = THREE.RepeatWrapping;
+            texture.wrapT = THREE.RepeatWrapping;
+            texture.repeat.set( 15, 15 );
+            var material = new THREE.MeshLambertMaterial({ color: 0xbbbbbb, map: texture });
+
+            // var material = new THREE.MeshLambertMaterial({ color: 0xbbbbbb });
+
             material.side = THREE.DoubleSide;
             var plane = new THREE.Mesh(geometry, material);
             plane.rotation.x = -Math.PI / 2;
@@ -313,6 +359,39 @@
             mesh.castShadow = true;
             scene.add(mesh);
         }
+
+        function createCubeRoom() {
+            var geometry = new THREE.BoxGeometry( 1300, 1300, 1300 );
+            var material = new THREE.MeshLambertMaterial({ color: 0xeeeeee, side: THREE.DoubleSide });
+            var mesh = new THREE.Mesh(geometry, material);
+            mesh.position.set(0, 0, 0);
+            // mesh.castShadow = true;
+            scene.add(mesh);
+        }
+
+        function createRoomTop() {
+            var geometry = new THREE.BoxGeometry( 1300, 10, 1300 );
+            var material = new THREE.MeshLambertMaterial({ color: 0xeeeeee, side: THREE.DoubleSide });
+            var mesh = new THREE.Mesh(geometry, material);
+            mesh.position.set(0, 271, 0);
+            // mesh.castShadow = true;
+            scene.add(mesh);
+        }
+
+        function createKitchenRoom() {
+            loader.load('./models/kitchen-geometry.fbx', function (object) {
+                object.children.forEach(child => {
+                    if (child.material) {
+                        var texture = new THREE.TextureLoader().load('./models/kitchen-texture.png');
+                        child.material.map = texture;
+                    }
+                })
+                scene.add(object);
+            });
+        }
+        createKitchenRoom();
+        createCubeRoom();
+        createRoomTop();
 
         function onDocumentMouseDown( event ) {
 
@@ -623,7 +702,7 @@
         window.addEventListener('resize', onWindowResize, false);
 
         // 摄像机位置
-        camera.position.set(0, 150, 500);
+        camera.position.set( 0, 100, 400);
 
         var animate = function () {
             requestAnimationFrame(animate);
@@ -634,7 +713,7 @@
             renderer.render(scene, camera);
         }
         initSceneBG();
-        createCube();
+        // createCube();
         createPlane();
         animate();
 
