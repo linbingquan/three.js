@@ -17,7 +17,7 @@
     <script src="./examples/js/objects/Reflector.js"></script>
     <script src="./examples/js/libs/stats.min.js"></script>
     <script src="./examples/js/libs/tween.min.js"></script>
-    <script src="./js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="./js/vue.min.js"></script>
     <link rel="stylesheet" href="./css/bootstrap.min.css">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <style>
@@ -42,10 +42,89 @@
     </style>
 </head>
 <body>
+    <div id="app">
+        <div
+            class="fixed-bottom white-bg"
+            v-show="isShowSelectPlaneDom"
+            ref="refSelectPlane"
+            @mouseenter="removeMouseDownEvent()"
+            @mouseleave="addMouseDownEvent()"
+            >
+            <div class="row justity-content-center">
+                <div class="col">
+                    <div class="card gree-prod" onclick="handleLoad_CXW200CCS02()">
+                        <img class="prod-img" src="./image/cxw-200-ccs02.png" alt="">
+                        <div class="prod-txt">cxw-200-ccs02</div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card gree-prod" onclick="handleLoad_CXW200CCS01A()">
+                        <img class="prod-img" src="./image/cxw-200-ccs01a.png" alt="">
+                        <div class="prod-txt">cxw-200-ccs01a</div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card gree-prod" onclick="handleLoad_CXW200TCD02()">
+                        <img class="prod-img" src="./image/cxw-200-tcd02.png" alt="">
+                        <div class="prod-txt">cxw-200-tcd02</div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card gree-prod" onclick="handleLoad_CXW200TCD01()">
+                        <img class="prod-img" src="./image/cxw-200-tcd01.png" alt="">
+                        <div class="prod-txt">cxw-200-tcd01</div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card gree-prod" onclick="handleLoad_XZTD105A01()">
+                        <img class="prod-img" src="./image/xztd105a-01.png" alt="">
+                        <div class="prod-txt">xztd105a-01</div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card gree-prod" onclick="handleLoad_XZTD105A03()">
+                        <img class="prod-img" src="./image/xztd105a-03.png" alt="">
+                        <div class="prod-txt">xztd105a-03</div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card gree-prod" onclick="handleLoad_JZXQS02B()">
+                        <img class="prod-img" src="./image/jzx-qs02b.png" alt="">
+                        <div class="prod-txt">jzx-qs02b</div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card gree-prod" onclick="handleLoad_JZXQS03B()">
+                        <img class="prod-img" src="./image/jzy-qs03b.png" alt="">
+                        <div class="prod-txt">jzy-qs03b</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div v-show="!isShowSelectPlaneDom" class="fixed-bottom text-muted text-center fs12">V0.0.3</div>
+    </div>
+    <script>
+        var vm = new Vue({
+            el: "#app",
+            data: {
+                isShowSelectPlaneDom: false,
+            },
+            methods: {
+                addMouseDownEvent: function () {
+                    console.log('==== addMouseDownEvent ====');
+                    document.addEventListener( 'mousedown', onDocumentMouseDown, false );
+                },
+                removeMouseDownEvent: function () {
+                    console.log('==== removeMouseDownEvent ====');
+                    document.removeEventListener( 'mousedown', onDocumentMouseDown, false );
+                }
+            }
+        });
+    </script>
     <script>
         if ( WEBGL.isWebGLAvailable() === false ) {
     
-            document.body.appendChild( WEBGL.getWebGLErrorMessage() );
+            document.getElementById("app").appendChild( WEBGL.getWebGLErrorMessage() );
     
         }
 
@@ -69,14 +148,14 @@
         renderer.shadowMap.enabled = true; // 渲染器开启阴影
 
         // 挂载节点
-        document.body.appendChild(renderer.domElement);
+        document.getElementById("app").appendChild(renderer.domElement);
 
         var stats = new Stats();
         // stats.setMode(1);
         stats.domElement.style.position = 'absolute';
         stats.domElement.left = '0px';
         stats.domElement.top = '0px';
-        document.body.appendChild(stats.domElement);
+        document.getElementById("app").appendChild(stats.domElement);
 
         var raycaster = new THREE.Raycaster();
         var mouse = new THREE.Vector2(); // 鼠标移动位置
@@ -417,6 +496,8 @@
 
         function onDocumentMouseDown( event ) {
 
+            console.log('==== onDocumentMouseDown ====');
+
             event.preventDefault();
 
             mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
@@ -446,14 +527,8 @@
 
         function handleSelectObj( intersected ) {
             if (intersected) {
-                $("#jsSelectBox").show();
-                $("#jsVersion").hide();
-                $("#jsSelectBox").mouseenter(function () {
-                    document.removeEventListener( 'mousedown', onDocumentMouseDown, false );
-                });
-                $("#jsSelectBox").mouseleave(function () {
-                    document.addEventListener( 'mousedown', onDocumentMouseDown, false );
-                });
+                vm.$data.isShowSelectPlaneDom = true;
+
                 intersectedObj = intersected.object.parent;
                 var { x, y, z } = intersectedObj.position;
                 camera.lookAt(x, y, z);
@@ -477,8 +552,7 @@
                     .start();
 
             } else {
-                $("#jsSelectBox").hide();
-                $("#jsVersion").show();
+                vm.$data.isShowSelectPlaneDom = false;
             }
         }
 
@@ -757,58 +831,5 @@
 
         }, false );
     </script>
-    <div id="jsSelectBox" class="fixed-bottom white-bg" style="display: none;">
-        <div class="row justity-content-center">
-            <div class="col">
-                <div class="card gree-prod" onclick="handleLoad_CXW200CCS02()">
-                    <img class="prod-img" src="./image/cxw-200-ccs02.png" alt="">
-                    <div class="prod-txt">cxw-200-ccs02</div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card gree-prod" onclick="handleLoad_CXW200CCS01A()">
-                    <img class="prod-img" src="./image/cxw-200-ccs01a.png" alt="">
-                    <div class="prod-txt">cxw-200-ccs01a</div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card gree-prod" onclick="handleLoad_CXW200TCD02()">
-                    <img class="prod-img" src="./image/cxw-200-tcd02.png" alt="">
-                    <div class="prod-txt">cxw-200-tcd02</div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card gree-prod" onclick="handleLoad_CXW200TCD01()">
-                    <img class="prod-img" src="./image/cxw-200-tcd01.png" alt="">
-                    <div class="prod-txt">cxw-200-tcd01</div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card gree-prod" onclick="handleLoad_XZTD105A01()">
-                    <img class="prod-img" src="./image/xztd105a-01.png" alt="">
-                    <div class="prod-txt">xztd105a-01</div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card gree-prod" onclick="handleLoad_XZTD105A03()">
-                    <img class="prod-img" src="./image/xztd105a-03.png" alt="">
-                    <div class="prod-txt">xztd105a-03</div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card gree-prod" onclick="handleLoad_JZXQS02B()">
-                    <img class="prod-img" src="./image/jzx-qs02b.png" alt="">
-                    <div class="prod-txt">jzx-qs02b</div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card gree-prod" onclick="handleLoad_JZXQS03B()">
-                    <img class="prod-img" src="./image/jzy-qs03b.png" alt="">
-                    <div class="prod-txt">jzy-qs03b</div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div id="jsVersion" class="fixed-bottom text-muted text-center fs12">V0.0.3</div>
 </body>
 </html>
