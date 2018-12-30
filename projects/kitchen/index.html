@@ -772,6 +772,7 @@
             // 复制位置
             var { x, y, z } = intersectedObj.position;
             object.position.set(x, y, z);
+            object.userData = { type: "Product" };
             scene.add(object);
 
             scene.remove(intersectedObj); // 删除选中对象
