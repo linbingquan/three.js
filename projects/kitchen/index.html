@@ -83,6 +83,7 @@
         var intersectedObj; // 用户选中对象
 
         var ambientLight = new THREE.AmbientLight( 0xffffff );
+        ambientLight.name = "ambient-light";
         scene.add(ambientLight);
 
         var directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
@@ -102,6 +103,7 @@
         directionalLight.castShadow = true;
 
         directionalLight.position.set(0, 500, 0);
+        directionalLight.name = "directional-Light";
         scene.add( directionalLight );
 
         var loader = new THREE.FBXLoader();
@@ -122,6 +124,7 @@
 
             object.name = "cxw-200-ccs02";
             object.position.set( -150, 160, -43 );
+            object.userData = { type: "Product" };
             scene.add(object);
 
         });
@@ -143,6 +146,7 @@
 
             object.name = "jzx-qs02b";
             object.position.set( 180, 78, 0 );
+            object.userData = { type: "Product" };
             scene.add(object);
 
         });
@@ -166,6 +170,7 @@
 
             object.name = "jzy-qs03b";
             object.position.set(0, 78, 0);
+            object.userData = { type: "Product" };
             scene.add(object);
 
         });
@@ -208,6 +213,7 @@
 
             object.name = "cxw-200-ccs01a";
             object.position.set( 180, 160, -43 );
+            object.userData = { type: "Product" };
             scene.add(object);
 
         });
@@ -229,6 +235,7 @@
             object.name = "cxw-200-tcd01";
             object.rotation.y = THREE.Math.degToRad( -90 );
             object.position.set( 350, 160, 280 );
+            object.userData = { type: "Product" };
             scene.add(object);
 
         });
@@ -249,6 +256,7 @@
 
             object.name = "cxw-200-tcd02";
             object.position.set(0, 160, 2);
+            object.userData = { type: "Product" };
             scene.add(object);
 
         });
@@ -269,6 +277,7 @@
 
             object.name = "xztd105a-01";
             object.position.set( 180, 14, 0.46);
+            object.userData = { type: "Product" };
             scene.add(object);
 
         });
@@ -289,6 +298,7 @@
 
             object.name = "xztd105a-03";
             object.position.set(0, 14, 0.46);
+            object.userData = { type: "Product" };
             scene.add(object);
 
         });
@@ -309,23 +319,27 @@
 
             object.name = "sark-geometry";
             object.position.set(350, 0, 200);
+            object.userData = { type: "Room" };
             scene.add(object);
 
             // 复制柜子
             var obj3d = object.clone();
             obj3d.position.z += 59;
+            obj3d.userData = { type: "Room" };
             scene.add(obj3d);
 
             // 复制柜子
             object = obj3d;
             var obj3d = object.clone();
             obj3d.position.z += 59;
+            obj3d.userData = { type: "Room" };
             scene.add(obj3d);
 
             // 复制柜子
             object = obj3d;
             var obj3d = object.clone();
             obj3d.position.z += 59;
+            obj3d.userData = { type: "Room" };
             scene.add(obj3d);
 
         });
@@ -348,6 +362,7 @@
             // plane.position.y = -70;
             plane.receiveShadow = true;
             plane.name = "ground";
+            plane.userData = { type: "Room" };
             scene.add(plane);
         }
 
@@ -357,6 +372,7 @@
             var mesh = new THREE.Mesh(geometry, material);
             mesh.position.set(0, 55, 0);
             mesh.castShadow = true;
+            mesh.userData = { type: "Room" };
             scene.add(mesh);
         }
 
@@ -366,6 +382,8 @@
             var mesh = new THREE.Mesh(geometry, material);
             mesh.position.set(0, 0, 0);
             // mesh.castShadow = true;
+            mesh.name = "cube-room";
+            mesh.userData = { type: "Room" };
             scene.add(mesh);
         }
 
@@ -375,6 +393,8 @@
             var mesh = new THREE.Mesh(geometry, material);
             mesh.position.set(0, 271, 0);
             // mesh.castShadow = true;
+            mesh.name = "room-top";
+            mesh.userData = { type: "Room" };
             scene.add(mesh);
         }
 
@@ -386,6 +406,8 @@
                         child.material.map = texture;
                     }
                 })
+                object.name = "kitchen-room";
+                object.userData = { type: "Room" };
                 scene.add(object);
             });
         }
@@ -405,7 +427,8 @@
             var intersectObjects = [];
             for (let index = 0; index < scene.children.length; index++) {
                 const object = scene.children[index];
-                if ( object instanceof THREE.Group) {
+                // 选择产品Product
+                if ( object instanceof THREE.Group && object.userData.type == "Product") {
                     object.children[0].name = object.name;
                     intersectObjects.push(object.children[0]);
                 }
