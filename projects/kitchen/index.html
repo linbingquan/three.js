@@ -58,10 +58,10 @@
         control.autoRotateSpeed = 1;
         control.enablePan = false;
         control.enableZoom = false;
-        control.minPolarAngle = Math.PI / 4; // 垂直高度上方
-        control.maxPolarAngle = Math.PI / 2 - 0.01; // 垂直高度下方
+        control.minPolarAngle = Math.PI / 3; // 垂直高度上方
+        control.maxPolarAngle = Math.PI / 2 - 0.1; // 垂直高度下方
         control.minAzimuthAngle = - Math.PI / 4; // radians
-	    control.maxAzimuthAngle = Math.PI / 4; // radians
+	    control.maxAzimuthAngle = Math.PI / 1000; // radians
 
         var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
@@ -725,7 +725,9 @@
         window.addEventListener('resize', onWindowResize, false);
 
         // 摄像机位置
-        camera.position.set( 0, 100, 400);
+        camera.position.set( -20, 100, 450);
+        // 控制组件看向的位置
+        control.target = new THREE.Vector3( 200, 0, -10 );
 
         var animate = function () {
             requestAnimationFrame(animate);
