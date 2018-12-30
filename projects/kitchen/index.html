@@ -125,6 +125,13 @@
         var vm = new Vue({
             el: "#app",
             data: {
+                productList: [
+                    { name: 'cxw-200-ccs02', type: 'Product', position: [ -150, 160, -43], geometryUrl: './models/cxw-200-ccs02-geometry.fbx', textureUrl: './models/cxw-200-ccs02-texture-1024.jpg' },
+                    { name: 'cxw-200-ccs01a', type: 'Product', position: [ 180, 160, -43 ], geometryUrl: './models/cxw-200-ccs01a-geometry.fbx', textureUrl: './models/cxw-200-ccs01a-texture-1024.jpg' },
+                    { name: 'xztd105a-01', type: 'Product', position: [ 180, 14, 0.46 ], geometryUrl: './models/xztd105a-01-geometry.fbx', textureUrl: './models/xztd105a-01-texture-1024.jpg' },
+                    { name: 'xztd105a-03', type: 'Product', position: [ 0, 14, 0.46 ], geometryUrl: './models/xztd105a-03-geometry.fbx', textureUrl: './models/xztd105a-03-texture-1024.jpg' },
+                    { name: 'jzx-qs02b', type: 'Product', position: [ 180, 78, 0 ], geometryUrl: './models/jzx-qs02b-geometry.fbx', textureUrl: './models/jzx-qs02b-texture-1024.jpg' },
+                ],
                 isShowSelectPlaneDom: false,
                 selectdProductPosition: { top: 0, left: 0, },
                 intersectedObj: { name: "" },
@@ -207,48 +214,36 @@
 
         var loader = new THREE.FBXLoader();
 
-        loader.load('./models/cxw-200-ccs02-geometry.fbx', function (object) {
+        function loadModelList( modelList ) {
+            for (let index = 0; index < modelList.length; index++) {
+                const modelItem = modelList[index];
+                
+                loader.load( modelItem.geometryUrl, function (object) {
 
-            // bugfixed
-            object.children.forEach(child => {
-                if (child.material) {
-                    child.material.side = THREE.DoubleSide;
-                    var texture = new THREE.TextureLoader().load('./models/cxw-200-ccs02-texture-1024.jpg');
-                    child.material.map = texture;
-                }
-                //设置模型生成阴影并接收阴影
-                child.castShadow = true;
-                // child.receiveShadow = true;
-            });
+                    // bugfixed
+                    object.children.forEach(child => {
+                        if (child.material) {
+                            child.material.side = THREE.DoubleSide;
+                            var texture = new THREE.TextureLoader().load( modelItem.textureUrl );
+                            child.material.map = texture;
+                        }
+                        //设置模型生成阴影并接收阴影
+                        child.castShadow = true;
+                        // child.receiveShadow = true;
+                    });
 
-            object.name = "cxw-200-ccs02";
-            object.position.set( -150, 160, -43 );
-            object.userData = { type: "Product" };
-            scene.add(object);
+                    object.name = modelItem.name;
+                    var x = modelItem.position[0];
+                    var y = modelItem.position[1];
+                    var z = modelItem.position[2];
+                    object.position.set( x, y, z );
+                    object.userData = { type: modelItem.type };
+                    scene.add(object);
 
-        });
-
-        loader.load('./models/jzx-qs02b-geometry.fbx', function (object) {
-
-            // bugfixed
-            object.children.forEach(child => {
-                if (child.material) {
-                    child.material.side = THREE.DoubleSide;
-                    var texture = new THREE.TextureLoader().load('./models/jzx-qs02b-texture-1024.jpg');
-                    child.material.map = texture;
-                    // child.rotation.y = THREE.Math.degToRad( 180 );
-                }
-                //设置模型生成阴影并接收阴影
-                child.castShadow = true;
-                // child.receiveShadow = true;
-            });
-
-            object.name = "jzx-qs02b";
-            object.position.set( 180, 78, 0 );
-            object.userData = { type: "Product" };
-            scene.add(object);
-
-        });
+                });
+            }
+        }
+        loadModelList(vm.$data.productList);
 
         loader.load('./models/jzy-qs03b-geometry.fbx', function (object) {
 
@@ -294,28 +289,7 @@
         //     object.position.set(-100, 2, 200);
         //     scene.add(object);
 
-        // });
-
-        loader.load('./models/cxw-200-ccs01a-geometry.fbx', function (object) {
-
-            // bugfixed
-            object.children.forEach(child => {
-                if (child.material) {
-                    child.material.side = THREE.DoubleSide;
-                    var texture = new THREE.TextureLoader().load('./models/cxw-200-ccs01a-texture-1024.jpg');
-                    child.material.map = texture;
-                }
-                //设置模型生成阴影并接收阴影
-                child.castShadow = true;
-                // child.receiveShadow = true;
-            });
-
-            object.name = "cxw-200-ccs01a";
-            object.position.set( 180, 160, -43 );
-            object.userData = { type: "Product" };
-            scene.add(object);
-
-        });
+        // });;
 
         loader.load('./models/cxw-200-tcd01-geometry.fbx', function (object) {
 
@@ -355,48 +329,6 @@
 
             object.name = "cxw-200-tcd02";
             object.position.set(0, 160, 2);
-            object.userData = { type: "Product" };
-            scene.add(object);
-
-        });
-
-        loader.load('./models/xztd105a-01-geometry.fbx', function (object) {
-
-            // bugfixed
-            object.children.forEach(child => {
-                if (child.material) {
-                    child.material.side = THREE.DoubleSide;
-                    var texture = new THREE.TextureLoader().load('./models/xztd105a-01-texture-1024.jpg');
-                    child.material.map = texture;
-                }
-                //设置模型生成阴影并接收阴影
-                child.castShadow = true;
-                // child.receiveShadow = true;
-            });
-
-            object.name = "xztd105a-01";
-            object.position.set( 180, 14, 0.46);
-            object.userData = { type: "Product" };
-            scene.add(object);
-
-        });
-
-        loader.load('./models/xztd105a-03-geometry.fbx', function (object) {
-
-            // bugfixed
-            object.children.forEach(child => {
-                if (child.material) {
-                    child.material.side = THREE.DoubleSide;
-                    var texture = new THREE.TextureLoader().load('./models/xztd105a-03-texture-1024.jpg');
-                    child.material.map = texture;
-                }
-                //设置模型生成阴影并接收阴影
-                child.castShadow = true;
-                // child.receiveShadow = true;
-            });
-
-            object.name = "xztd105a-03";
-            object.position.set(0, 14, 0.46);
             object.userData = { type: "Product" };
             scene.add(object);
 
@@ -574,21 +506,6 @@
             } else {
                 vm.$data.isShowSelectPlaneDom = false;
             }
-        }
-
-        function handleLoadObj( fbxName ) {
-
-            loader.load('./models/' + fbxName + '.fbx', function (object) {
-
-                object.name = fbxName;
-                var { x, y, z } = intersectedObj.position;
-                object.position.set(x, y, z);
-                scene.add(object);
-
-                scene.remove(intersectedObj); // 删除选中对象
-                intersectedObj = object;
-
-            });
         }
 
         function handleLoad_CXW200CCS02() {
