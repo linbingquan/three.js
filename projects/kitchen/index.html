@@ -30,6 +30,19 @@
         .gree-prod .prod-img { margin: 0 auto; max-width: 100%; }
         .gree-prod .prod-txt { text-align: center; text-transform: uppercase; }
 
+        .product-info {
+            display: inline-block;
+            margin-left: -100px;
+            padding: 5px;
+            width: 200px;
+            font-size: 14px;
+            border-radius: 5px;
+            border: 1px solid rgba(0, 0, 0, .125);
+            background: #fff;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
         @media screen and (max-width: 1366px) {
             .gree-prod { width: 180px; }
         }
@@ -43,6 +56,11 @@
 </head>
 <body>
     <div id="app">
+        <div
+            class="fixed-top product-info"
+            :style="{ top: selectdProductPosition.top + 'px', left: selectdProductPosition.left + 'px' }" >
+            {{ intersectedObj.name }}
+        </div>
         <div
             class="fixed-bottom white-bg"
             v-show="isShowSelectPlaneDom"
@@ -108,6 +126,8 @@
             el: "#app",
             data: {
                 isShowSelectPlaneDom: false,
+                selectdProductPosition: { top: 0, left: 0, },
+                intersectedObj: { name: "" },
             },
             methods: {
                 addMouseDownEvent: function () {
@@ -804,11 +824,37 @@
         // 控制组件看向的位置
         control.target = new THREE.Vector3( 200, 0, -10 );
 
+        // 设置提示位置
+        function setProdTipPosition() {
+            if (intersectedObj === undefined) {
+                return;
+            }
+            //获取到窗口的一半高度和一半宽度
+            let halfWidth = window.innerWidth / 2;
+            let halfHeight = window.innerHeight / 2;
+
+            let vector = intersectedObj.position.clone().project(camera);
+
+            //修改第一个的div的位置
+            vm.$data.selectdProductPosition = {
+                left: vector.x * halfWidth + halfWidth,
+                top: -vector.y * halfHeight + halfHeight
+            };
+            vm.$data.intersectedObj = intersectedObj;
+        }
+
+        // 每桢渲染
+        function updateRender() {
+            setProdTipPosition();
+        }
+
         var animate = function () {
             requestAnimationFrame(animate);
             control.update();
             TWEEN.update();
             stats.update();
+
+            updateRender();
 
             renderer.render(scene, camera);
         }
