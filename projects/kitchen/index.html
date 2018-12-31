@@ -464,7 +464,7 @@
             loader.load('./models/kitchen-geometry.fbx', function (object) {
                 object.children.forEach(child => {
                     if (child.material) {
-                        var texture = new THREE.TextureLoader().load('./models/kitchen-texture.png');
+                        var texture = new THREE.TextureLoader().load('./models/kitchen-texture-1024.jpg');
                         child.material.map = texture;
                     }
                 })
