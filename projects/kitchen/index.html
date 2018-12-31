@@ -59,7 +59,7 @@
         <div
             class="fixed-top product-info"
             :style="{ top: selectdProductPosition.top + 'px', left: selectdProductPosition.left + 'px' }" >
-            {{ intersectedObj.name }}
+            {{ intersectedObj.userData.cname }} {{ intersectedObj.name }}
         </div>
         <div
             class="fixed-bottom white-bg"
@@ -72,49 +72,49 @@
                 <div class="col">
                     <div class="card gree-prod" onclick="handleLoad_CXW200CCS02()">
                         <img class="prod-img" src="./image/cxw-200-ccs02.png" alt="">
-                        <div class="prod-txt">cxw-200-ccs02</div>
+                        <div class="prod-txt">烟机<br />cxw-200-ccs02</div>
                     </div>
                 </div>
                 <div class="col">
                     <div class="card gree-prod" onclick="handleLoad_CXW200CCS01A()">
                         <img class="prod-img" src="./image/cxw-200-ccs01a.png" alt="">
-                        <div class="prod-txt">cxw-200-ccs01a</div>
+                        <div class="prod-txt">烟机<br />cxw-200-ccs01a</div>
                     </div>
                 </div>
                 <div class="col">
                     <div class="card gree-prod" onclick="handleLoad_CXW200TCD02()">
                         <img class="prod-img" src="./image/cxw-200-tcd02.png" alt="">
-                        <div class="prod-txt">cxw-200-tcd02</div>
+                        <div class="prod-txt">烟机<br />cxw-200-tcd02</div>
                     </div>
                 </div>
                 <div class="col">
                     <div class="card gree-prod" onclick="handleLoad_CXW200TCD01()">
                         <img class="prod-img" src="./image/cxw-200-tcd01.png" alt="">
-                        <div class="prod-txt">cxw-200-tcd01</div>
+                        <div class="prod-txt">烟机<br />cxw-200-tcd01</div>
                     </div>
                 </div>
                 <div class="col">
                     <div class="card gree-prod" onclick="handleLoad_XZTD105A01()">
                         <img class="prod-img" src="./image/xztd105a-01.png" alt="">
-                        <div class="prod-txt">xztd105a-01</div>
+                        <div class="prod-txt">消毒柜<br />xztd105a-01</div>
                     </div>
                 </div>
                 <div class="col">
                     <div class="card gree-prod" onclick="handleLoad_XZTD105A03()">
                         <img class="prod-img" src="./image/xztd105a-03.png" alt="">
-                        <div class="prod-txt">xztd105a-03</div>
+                        <div class="prod-txt">消毒柜<br />xztd105a-03</div>
                     </div>
                 </div>
                 <div class="col">
                     <div class="card gree-prod" onclick="handleLoad_JZXQS02B()">
                         <img class="prod-img" src="./image/jzx-qs02b.png" alt="">
-                        <div class="prod-txt">jzx-qs02b</div>
+                        <div class="prod-txt">燃气灶<br />jzx-qs02b</div>
                     </div>
                 </div>
                 <div class="col">
                     <div class="card gree-prod" onclick="handleLoad_JZXQS03B()">
                         <img class="prod-img" src="./image/jzy-qs03b.png" alt="">
-                        <div class="prod-txt">jzy-qs03b</div>
+                        <div class="prod-txt">燃气灶<br />jzy-qs03b</div>
                     </div>
                 </div>
             </div>
@@ -126,15 +126,20 @@
             el: "#app",
             data: {
                 productList: [
-                    { name: 'cxw-200-ccs02', type: 'Product', position: [ -150, 160, -43], geometryUrl: './models/cxw-200-ccs02-geometry.fbx', textureUrl: './models/cxw-200-ccs02-texture-1024.jpg' },
-                    { name: 'cxw-200-ccs01a', type: 'Product', position: [ 180, 160, -43 ], geometryUrl: './models/cxw-200-ccs01a-geometry.fbx', textureUrl: './models/cxw-200-ccs01a-texture-1024.jpg' },
-                    { name: 'xztd105a-01', type: 'Product', position: [ 180, 14, 0.46 ], geometryUrl: './models/xztd105a-01-geometry.fbx', textureUrl: './models/xztd105a-01-texture-1024.jpg' },
-                    { name: 'xztd105a-03', type: 'Product', position: [ 0, 14, 0.46 ], geometryUrl: './models/xztd105a-03-geometry.fbx', textureUrl: './models/xztd105a-03-texture-1024.jpg' },
-                    { name: 'jzx-qs02b', type: 'Product', position: [ 180, 78, 0 ], geometryUrl: './models/jzx-qs02b-geometry.fbx', textureUrl: './models/jzx-qs02b-texture-1024.jpg' },
+                    { cname: '烟机', name: 'cxw-200-ccs02', type: 'Product', position: [ -150, 160, -43], geometryUrl: './models/cxw-200-ccs02-geometry.fbx', textureUrl: './models/cxw-200-ccs02-texture-1024.jpg' },
+                    { cname: '烟机', name: 'cxw-200-ccs01a', type: 'Product', position: [ 180, 160, -43 ], geometryUrl: './models/cxw-200-ccs01a-geometry.fbx', textureUrl: './models/cxw-200-ccs01a-texture-1024.jpg' },
+                    { cname: '消毒柜', name: 'xztd105a-01', type: 'Product', position: [ 180, 14, 0.46 ], geometryUrl: './models/xztd105a-01-geometry.fbx', textureUrl: './models/xztd105a-01-texture-1024.jpg' },
+                    { cname: '消毒柜', name: 'xztd105a-03', type: 'Product', position: [ 0, 14, 0.46 ], geometryUrl: './models/xztd105a-03-geometry.fbx', textureUrl: './models/xztd105a-03-texture-1024.jpg' },
+                    { cname: '燃气灶', name: 'jzx-qs02b', type: 'Product', position: [ 180, 78, 0 ], geometryUrl: './models/jzx-qs02b-geometry.fbx', textureUrl: './models/jzx-qs02b-texture-1024.jpg' },
                 ],
                 isShowSelectPlaneDom: false,
                 selectdProductPosition: { top: 0, left: 0, },
-                intersectedObj: { name: "" },
+                intersectedObj: {
+                    userData: {
+                        cname: "",
+                    },
+                    name: "",
+                },
             },
             methods: {
                 addMouseDownEvent: function () {
@@ -237,7 +242,7 @@
                     var y = modelItem.position[1];
                     var z = modelItem.position[2];
                     object.position.set( x, y, z );
-                    object.userData = { type: modelItem.type };
+                    object.userData = { cname: modelItem.cname, type: modelItem.type };
                     scene.add(object);
 
                 });
@@ -264,7 +269,7 @@
 
             object.name = "jzy-qs03b";
             object.position.set(0, 78, 0);
-            object.userData = { type: "Product" };
+            object.userData = {  cname: '燃气灶', type: "Product" };
             scene.add(object);
 
         });
@@ -308,7 +313,7 @@
             object.name = "cxw-200-tcd01";
             object.rotation.y = THREE.Math.degToRad( -90 );
             object.position.set( 350, 160, 280 );
-            object.userData = { type: "Product" };
+            object.userData = { cname: '烟机', type: "Product" };
             scene.add(object);
 
         });
@@ -329,7 +334,7 @@
 
             object.name = "cxw-200-tcd02";
             object.position.set(0, 160, 2);
-            object.userData = { type: "Product" };
+            object.userData = {  cname: '烟机', type: "Product" };
             scene.add(object);
 
         });
@@ -525,6 +530,7 @@
                 });
 
                 object.name = "cxw-200-ccs02";
+                object.userData = { cname: '烟机' };
 
                 // 复制位置和替换
                 copyPositionAndReplace(object);
@@ -549,6 +555,7 @@
                 });
 
                 object.name = "cxw-200-ccs01a";
+                object.userData = { cname: '烟机' };
 
                 // 复制位置和替换
                 copyPositionAndReplace(object);
@@ -573,6 +580,7 @@
                 });
 
                 object.name = "cxw-200-tcd02";
+                object.userData = { cname: '烟机' };
 
                 // 复制位置和替换
                 copyPositionAndReplace(object);
@@ -597,6 +605,7 @@
                 });
 
                 object.name = "cxw-200-tcd01";
+                object.userData = { cname: '烟机' };
 
                 // 复制位置和替换
                 copyPositionAndReplace(object);
@@ -621,6 +630,7 @@
                 });
 
                 object.name = "xztd105a-01";
+                object.userData = { cname: '消毒柜' };
 
                 // 复制位置和替换
                 copyPositionAndReplace(object);
@@ -645,6 +655,7 @@
                 });
 
                 object.name = "xztd105a-03";
+                object.userData = { cname: '消毒柜' };
 
                 // 复制位置和替换
                 copyPositionAndReplace(object);
@@ -669,6 +680,7 @@
                 });
 
                 object.name = "jzx-qs02b";
+                object.userData = { cname: '燃气灶' };
 
                 // 复制位置和替换
                 copyPositionAndReplace(object);
@@ -696,6 +708,7 @@
                 });
 
                 object.name = "jzy-qs03b";
+                object.userData = { cname: '燃气灶' };
 
                 // 复制位置和替换
                 copyPositionAndReplace(object);
@@ -709,7 +722,7 @@
             // 复制位置
             var { x, y, z } = intersectedObj.position;
             object.position.set(x, y, z);
-            object.userData = { type: "Product" };
+            object.userData = Object.assign({}, object.userData, { type: "Product" });
             scene.add(object);
 
             scene.remove(intersectedObj); // 删除选中对象
