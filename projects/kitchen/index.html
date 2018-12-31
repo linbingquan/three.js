@@ -248,137 +248,122 @@
                 });
             }
         }
-        loadModelList(vm.$data.productList);
 
-        loader.load('./models/jzy-qs03b-geometry.fbx', function (object) {
+        function loadFbxModels() {
+            
+            loader.load('./models/jzy-qs03b-geometry.fbx', function (object) {
+    
+                // bugfixed
+                object.children.forEach(child => {
+                    if (child.material[1]) {
+                        child.material[0].side = THREE.DoubleSide;
+                        child.material[1].side = THREE.DoubleSide;
+                        var texture = new THREE.TextureLoader().load('./models/jzy-qs03b-texture-1024.jpg');
+                        child.material[0].map = texture;
+                        child.material[1].map = texture;
+                        // child.rotation.y = THREE.Math.degToRad( 180 );
+                    }
+                    //设置模型生成阴影并接收阴影
+                    child.castShadow = true;
+                    // child.receiveShadow = true;
+                });
+    
+                object.name = "jzy-qs03b";
+                object.position.set(0, 78, 0);
+                object.userData = {  cname: '燃气灶', type: "Product" };
+                scene.add(object);
+    
+            });
+    
+            loader.load('./models/cxw-200-tcd01-geometry.fbx', function (object) {
+    
+                // bugfixed
+                object.children.forEach(child => {
+                    if (child.material[0]) {
+                        child.material[0].side = THREE.DoubleSide;
+                        var texture = new THREE.TextureLoader().load('./models/cxw-200-tcd01-texture-1024.jpg');
+                        child.material[0].map = texture;
+                    }
+                    //设置模型生成阴影并接收阴影
+                    child.castShadow = true;
+                    // child.receiveShadow = true;
+                });
+    
+                object.name = "cxw-200-tcd01";
+                object.rotation.y = THREE.Math.degToRad( -90 );
+                object.position.set( 350, 160, 280 );
+                object.userData = { cname: '烟机', type: "Product" };
+                scene.add(object);
+    
+            });
+    
+            loader.load('./models/cxw-200-tcd02-geometry.fbx', function (object) {
+    
+                // bugfixed
+                object.children.forEach(child => {
+                    if (child.material[0]) {
+                        child.material[0].side = THREE.DoubleSide;
+                        var texture = new THREE.TextureLoader().load('./models/cxw-200-tcd02-texture-1024.jpg');
+                        child.material[0].map = texture;
+                    }
+                    //设置模型生成阴影并接收阴影
+                    child.castShadow = true;
+                    // child.receiveShadow = true;
+                });
+    
+                object.name = "cxw-200-tcd02";
+                object.position.set(0, 160, 2);
+                object.userData = {  cname: '烟机', type: "Product" };
+                scene.add(object);
+    
+            });
+            
+        }
 
-            // bugfixed
-            object.children.forEach(child => {
-                if (child.material[1]) {
-                    child.material[0].side = THREE.DoubleSide;
-                    child.material[1].side = THREE.DoubleSide;
-                    var texture = new THREE.TextureLoader().load('./models/jzy-qs03b-texture-1024.jpg');
-                    child.material[0].map = texture;
-                    child.material[1].map = texture;
-                    // child.rotation.y = THREE.Math.degToRad( 180 );
-                }
-                //设置模型生成阴影并接收阴影
-                child.castShadow = true;
-                // child.receiveShadow = true;
+        function createSarks() {
+            
+            loader.load('./models/sark-geometry.fbx', function (object) {
+    
+                // bugfixed
+                object.children.forEach(child => {
+                    if (child.material) {
+                        child.material.side = THREE.DoubleSide;
+                        // var texture = new THREE.TextureLoader().load('./models/sark-texture-1024.jpg');
+                        // child.material.map = texture;
+                    }
+                    //设置模型生成阴影并接收阴影
+                    child.castShadow = true;
+                    // child.receiveShadow = true;
+                });
+    
+                object.name = "sark-geometry";
+                object.position.set(350, 0, 200);
+                object.userData = { type: "Room" };
+                scene.add(object);
+    
+                // 复制柜子
+                var obj3d = object.clone();
+                obj3d.position.z += 59;
+                obj3d.userData = { type: "Room" };
+                scene.add(obj3d);
+    
+                // 复制柜子
+                object = obj3d;
+                var obj3d = object.clone();
+                obj3d.position.z += 59;
+                obj3d.userData = { type: "Room" };
+                scene.add(obj3d);
+    
+                // 复制柜子
+                object = obj3d;
+                var obj3d = object.clone();
+                obj3d.position.z += 59;
+                obj3d.userData = { type: "Room" };
+                scene.add(obj3d);
+    
             });
 
-            object.name = "jzy-qs03b";
-            object.position.set(0, 78, 0);
-            object.userData = {  cname: '燃气灶', type: "Product" };
-            scene.add(object);
-
-        });
-
-        // loader.load('./models/L1PB26-G24-A2-geometry.fbx', function (object) {
-
-        //     // bugfixed
-        //     object.children.forEach(child => {
-        //         if (child.material) {
-        //             child.material.side = THREE.DoubleSide;
-        //             var texture = new THREE.TextureLoader().load('./models/L1PB26-G24-A2-texture-1024.jpg');
-        //             child.material.map = texture;
-        //         }
-        //         //设置模型生成阴影并接收阴影
-        //         child.castShadow = true;
-        //         // child.receiveShadow = true;
-        //     });
-
-        //     object.scale.set(0.15, 0.15, 0.15);
-
-        //     object.name = "L1PB26-G24-A2";
-        //     object.position.set(-100, 2, 200);
-        //     scene.add(object);
-
-        // });;
-
-        loader.load('./models/cxw-200-tcd01-geometry.fbx', function (object) {
-
-            // bugfixed
-            object.children.forEach(child => {
-                if (child.material[0]) {
-                    child.material[0].side = THREE.DoubleSide;
-                    var texture = new THREE.TextureLoader().load('./models/cxw-200-tcd01-texture-1024.jpg');
-                    child.material[0].map = texture;
-                }
-                //设置模型生成阴影并接收阴影
-                child.castShadow = true;
-                // child.receiveShadow = true;
-            });
-
-            object.name = "cxw-200-tcd01";
-            object.rotation.y = THREE.Math.degToRad( -90 );
-            object.position.set( 350, 160, 280 );
-            object.userData = { cname: '烟机', type: "Product" };
-            scene.add(object);
-
-        });
-
-        loader.load('./models/cxw-200-tcd02-geometry.fbx', function (object) {
-
-            // bugfixed
-            object.children.forEach(child => {
-                if (child.material[0]) {
-                    child.material[0].side = THREE.DoubleSide;
-                    var texture = new THREE.TextureLoader().load('./models/cxw-200-tcd02-texture-1024.jpg');
-                    child.material[0].map = texture;
-                }
-                //设置模型生成阴影并接收阴影
-                child.castShadow = true;
-                // child.receiveShadow = true;
-            });
-
-            object.name = "cxw-200-tcd02";
-            object.position.set(0, 160, 2);
-            object.userData = {  cname: '烟机', type: "Product" };
-            scene.add(object);
-
-        });
-
-        loader.load('./models/sark-geometry.fbx', function (object) {
-
-            // bugfixed
-            object.children.forEach(child => {
-                if (child.material) {
-                    child.material.side = THREE.DoubleSide;
-                    // var texture = new THREE.TextureLoader().load('./models/sark-texture-1024.jpg');
-                    // child.material.map = texture;
-                }
-                //设置模型生成阴影并接收阴影
-                child.castShadow = true;
-                // child.receiveShadow = true;
-            });
-
-            object.name = "sark-geometry";
-            object.position.set(350, 0, 200);
-            object.userData = { type: "Room" };
-            scene.add(object);
-
-            // 复制柜子
-            var obj3d = object.clone();
-            obj3d.position.z += 59;
-            obj3d.userData = { type: "Room" };
-            scene.add(obj3d);
-
-            // 复制柜子
-            object = obj3d;
-            var obj3d = object.clone();
-            obj3d.position.z += 59;
-            obj3d.userData = { type: "Room" };
-            scene.add(obj3d);
-
-            // 复制柜子
-            object = obj3d;
-            var obj3d = object.clone();
-            obj3d.position.z += 59;
-            obj3d.userData = { type: "Room" };
-            scene.add(obj3d);
-
-        });
+        }
 
         function createPlane() {
             // 地面
@@ -447,9 +432,6 @@
                 scene.add(object);
             });
         }
-        createKitchenRoom();
-        createCubeRoom();
-        createRoomTop();
 
         function onDocumentMouseDown( event ) {
 
@@ -791,6 +773,12 @@
         initSceneBG();
         // createCube();
         createPlane();
+        createKitchenRoom();
+        createCubeRoom();
+        createRoomTop();
+        createSarks();
+        loadModelList(vm.$data.productList);
+        loadFbxModels();
         animate();
 
         document.addEventListener( 'dragover', function ( event ) {
