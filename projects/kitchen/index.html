@@ -249,6 +249,8 @@
             }
         }
 
+        var cubeCamera1 = new THREE.CubeCamera( 1, 10000, 128 );
+        var cubeCamera2 = new THREE.CubeCamera( 1, 10000, 128 );
         function loadFbxModels() {
             
             loader.load('./models/jzy-qs03b-geometry.fbx', function (object) {
@@ -274,12 +276,19 @@
                 scene.add(object);
     
             });
-    
+
             loader.load('./models/cxw-200-tcd01-geometry.fbx', function (object) {
-    
+
+                var cubeCamera = cubeCamera1;
+                // var cubeCamera = new THREE.CubeCamera( 1, 10000, 128 );
+                cubeCamera.name = "cubeCamera-cxw-200-tcd01";
+                scene.add(cubeCamera);
+
                 // bugfixed
                 object.children.forEach(child => {
                     if (child.material[0]) {
+                        var material = new THREE.MeshLambertMaterial({ envMap: cubeCamera.renderTarget.texture });
+                        child.material[0] = material;
                         child.material[0].side = THREE.DoubleSide;
                         var texture = new THREE.TextureLoader().load('./models/cxw-200-tcd01-texture-1024.jpg');
                         child.material[0].map = texture;
@@ -294,14 +303,24 @@
                 object.position.set( 350, 160, 280 );
                 object.userData = { cname: '烟机', type: "Product" };
                 scene.add(object);
-    
+
+                cubeCamera.position.copy( object.position );
+                cubeCamera.update( renderer, scene );
+
             });
-    
+
             loader.load('./models/cxw-200-tcd02-geometry.fbx', function (object) {
-    
+
+                var cubeCamera = cubeCamera2;
+                // var cubeCamera = new THREE.CubeCamera( 1, 10000, 128 );
+                cubeCamera.name = "cubeCamera-cxw-200-tcd01";
+                scene.add(cubeCamera);
+
                 // bugfixed
                 object.children.forEach(child => {
                     if (child.material[0]) {
+                        var material = new THREE.MeshLambertMaterial({ envMap: cubeCamera.renderTarget.texture });
+                        child.material[0] = material;
                         child.material[0].side = THREE.DoubleSide;
                         var texture = new THREE.TextureLoader().load('./models/cxw-200-tcd02-texture-1024.jpg');
                         child.material[0].map = texture;
@@ -315,7 +334,10 @@
                 object.position.set(0, 160, 2);
                 object.userData = {  cname: '烟机', type: "Product" };
                 scene.add(object);
-    
+
+                cubeCamera.position.copy( object.position );
+                cubeCamera.update( renderer, scene );
+
             });
             
         }
@@ -780,6 +802,22 @@
         loadModelList(vm.$data.productList);
         loadFbxModels();
         animate();
+
+        // TODO: 导入完成后update cubeCamera
+        var countInterval = 0;
+        var _time = setInterval(function () {
+
+            console.log('==== setInterval update cubeCamera ====');
+            cubeCamera1.update( renderer, scene );
+            cubeCamera2.update( renderer, scene );
+
+            countInterval += 1;
+            if (countInterval === 5) {
+                clearInterval(_time);
+                console.log('==== clearInterval update cubeCamera ====');
+            }
+        }, 500);
+        
 
         document.addEventListener( 'dragover', function ( event ) {
 
