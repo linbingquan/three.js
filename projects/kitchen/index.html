@@ -119,12 +119,18 @@
                 </div>
             </div>
         </div>
-        <div v-show="!isShowSelectPlaneDom" class="fixed-bottom text-muted text-center fs12">V0.0.4</div>
+        <div
+            class="fixed-bottom text-muted text-center fs12"
+            v-show="!isShowSelectPlaneDom"
+            @mouseenter="removeMouseDownEvent()"
+            @mouseleave="addMouseDownEvent()"
+            @click="toogleControlDebug()">V0.0.4</div>
     </div>
     <script>
         var vm = new Vue({
             el: "#app",
             data: {
+                isDebug: false,
                 productList: [
                     { cname: '烟机', name: 'cxw-200-ccs02', type: 'Product', position: [ -150, 160, -43], geometryUrl: './models/cxw-200-ccs02-geometry.fbx', textureUrl: './models/cxw-200-ccs02-texture-1024.jpg' },
                     { cname: '烟机', name: 'cxw-200-ccs01a', type: 'Product', position: [ 180, 160, -43 ], geometryUrl: './models/cxw-200-ccs01a-geometry.fbx', textureUrl: './models/cxw-200-ccs01a-texture-1024.jpg' },
@@ -142,6 +148,18 @@
                 },
             },
             methods: {
+                toogleControlDebug() {
+                    console.log('[toogleControlDebug] isDebug:', this.isDebug);
+                    if (this.isDebug) {
+                        this.isDebug = false;
+                        control.enablePan = true;
+                        control.enableZoom = true;
+                    } else {
+                        this.isDebug = true;
+                        control.enablePan = false;
+                        control.enableZoom = false;
+                    }
+                },
                 addMouseDownEvent: function () {
                     console.log('==== addMouseDownEvent ====');
                     document.addEventListener( 'mousedown', onDocumentMouseDown, false );
