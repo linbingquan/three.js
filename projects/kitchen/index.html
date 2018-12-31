@@ -58,6 +58,7 @@
     <div id="app">
         <div
             class="fixed-top product-info"
+            v-show="intersectedObj.name"
             :style="{ top: selectdProductPosition.top + 'px', left: selectdProductPosition.left + 'px' }" >
             {{ intersectedObj.userData.cname }} {{ intersectedObj.name }}
         </div>
