@@ -4,7 +4,7 @@
 
 THREE.DrawControls = function ( camera, domElement ) {
 
-	// THREE.Object3D.call( this );
+	THREE.Object3D.call( this );
 
 	domElement = domElement !== undefined ? domElement : document;
 
@@ -14,7 +14,88 @@ THREE.DrawControls = function ( camera, domElement ) {
 
 	var scope = this;
 	var vector3List = [];
+	var helperLine = [];
 	var raycaster = new THREE.Raycaster();
+
+	this.helper = {};
+
+	this.setDrawMode = function ( isDrawMode ) {
+
+		if (isDrawMode) {
+
+			scope.helper[ "helperLineX" ].visible = true;
+			scope.helper[ "helperLineY" ].visible = true;
+
+		} else {
+
+			scope.helper[ "helperLineX" ].visible = false;
+			scope.helper[ "helperLineY" ].visible = false;
+
+		}
+
+	}
+
+	var setupGizmoHelperLineX = function () {
+
+		var _gizmo = new THREE.Object3D();
+
+		var geometry = new THREE.Geometry();
+		geometry.vertices.push(
+			new THREE.Vector3(-1e3, 0, 0),
+			new THREE.Vector3(1e3, 0, 0),
+		);
+		var material = new THREE.LineBasicMaterial( { color: new THREE.Color( 0x787878 ) } );
+		var mesh = new THREE.Line(geometry, material);
+		mesh.name = 'helperLineX';
+
+		_gizmo.add(mesh);
+
+		return _gizmo;
+
+	};
+
+	var setupGizmoHelperLineY = function () {
+
+		var _gizmo = new THREE.Object3D();
+
+		var geometry = new THREE.Geometry();
+		geometry.vertices.push(
+			new THREE.Vector3(0, -1e3, 0),
+			new THREE.Vector3(0, 1e3, 0),
+		);
+		var material = new THREE.LineBasicMaterial( { color: new THREE.Color( 0x787878 ) } );
+		var mesh = new THREE.Line(geometry, material);
+		mesh.name = 'helperLineY';
+
+		_gizmo.add(mesh);
+
+		return _gizmo;
+
+	};
+
+	var setupGizmoHelperPlane = function () {
+
+		var rect = domElement.getBoundingClientRect();
+
+		var _gizmo = new THREE.Object3D();
+
+		var geometry = new THREE.PlaneGeometry( 1e3, 1e3 ); // TODO: 动态获取
+		var material = new THREE.MeshBasicMaterial( { visible: false } );
+		var mesh = new THREE.Mesh( geometry, material );
+		mesh.name = 'helperPlane';
+
+		_gizmo.add(mesh);
+
+		return _gizmo;
+
+	};
+
+	this.add( this.helper[ "helperLineX" ] = setupGizmoHelperLineX() );
+	this.add( this.helper[ "helperLineY" ] = setupGizmoHelperLineY() );
+	this.add( this.helper[ "helperPlane" ] = setupGizmoHelperPlane() );
+
+	this.helper[ "helperLineX" ].visible = false;
+	this.helper[ "helperLineY" ].visible = false;
 
 	function getPointer( event ) {
 
@@ -33,7 +114,7 @@ THREE.DrawControls = function ( camera, domElement ) {
 	function onMouseDown( event ) {
 
 		if ( scope.enabled === false ) return;
-
+	
 		event.preventDefault();
 
 		var pointer = getPointer( event );
@@ -41,11 +122,12 @@ THREE.DrawControls = function ( camera, domElement ) {
 		raycaster.setFromCamera( pointer, camera );
 
 		var intersect =
-			raycaster.intersectObjects( editor.scene.children, true )[ 0 ] || false;
+			raycaster.intersectObjects( [scope.helper[ "helperPlane" ]], true )[ 0 ] || false;
 
 		if ( intersect ) {
 
 			vector3List.push( intersect.point );
+			helperLine[0] = intersect.point;
 
 		}
 
@@ -54,6 +136,18 @@ THREE.DrawControls = function ( camera, domElement ) {
 	function onMouseMove( event ) {
 
 		if ( scope.enabled === false ) return;
+
+		var pointer = getPointer( event );
+
+		raycaster.setFromCamera( pointer, camera );
+
+		var intersect = raycaster.intersectObjects( editor.scene.children, true )[ 0 ] || false;
+
+		if ( intersect ) {
+
+			helperLine[1] = intersect.point;
+
+		}
 
 	}
 
@@ -111,13 +205,10 @@ THREE.DrawControls = function ( camera, domElement ) {
 
 };
 
-// THREE.DrawControls.prototype = Object.assign( Object.create( THREE.Object3D.prototype ), {
+THREE.DrawControls.prototype = Object.assign( Object.create( THREE.Object3D.prototype ), {
 
-// 	constructor: THREE.DrawControls,
+	constructor: THREE.DrawControls,
 
-// 	isDrawControls: true
+	isDrawControls: true
 
-// } );
-
-THREE.DrawControls.prototype = Object.create( THREE.EventDispatcher.prototype );
-THREE.DrawControls.prototype.constructor = THREE.DrawControls;
+} );

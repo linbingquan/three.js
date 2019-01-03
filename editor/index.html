@@ -19,6 +19,7 @@
 		<script src="../examples/js/libs/system.min.js"></script>
 
 		<script src="../examples/js/controls/EditorControls.js"></script>
+		<script src="../examples/js/controls/OrbitControls.js"></script>
 		<script src="../examples/js/controls/DrawControls.js"></script> <!-- 绘图控件 -->
 		<script src="../examples/js/controls/TransformControls.js"></script>
 
@@ -372,9 +373,12 @@
 				<img src="./image/box3.png" alt="">
 			</div>
 		</div>
+		<div class="Panel" id="draw-toolbar"><button onclick="draw2d()">绘图</button></div>
 		<style>
+			#draw-toolbar { position: absolute; top: 50%; left: 0; }
 			#menubar { z-index: 10; } /* fixed menubar cover stats */
 			#panel-material {
+				display: none;
 				position: absolute;
 				top: 25%;
 				top: calc(50% - 273px);
@@ -457,6 +461,12 @@
 				mesh.name = 'Box1';
 
 				editor.execute( new AddObjectCommand( mesh ) );
+			}
+
+			function draw2d() {
+
+				editor.draw2dMode();
+
 			}
 		</script>
 

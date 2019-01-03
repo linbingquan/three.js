@@ -34,6 +34,10 @@ var Editor = function () {
 		editorLookAtForward: new Signal(),
 		editorLookAtRight: new Signal(),
 
+		// 绘图模式
+
+		editorDraw2dMode: new Signal(),
+
 		savingStarted: new Signal(),
 		savingFinished: new Signal(),
 
@@ -463,6 +467,18 @@ Editor.prototype = {
 		this.camera.position.set( 50, 0, 0 );
 		this.camera.lookAt( new THREE.Vector3() );
 		this.signals.editorLookAtRight.dispatch();
+
+	},
+
+	/**
+	 * linbingquan 绘图模式
+	 */
+
+	draw2dMode: function () {
+
+		this.camera.position.set( 0, 0, 50 );
+		this.camera.lookAt( new THREE.Vector3() );
+		this.signals.editorDraw2dMode.dispatch();
 
 	},
 

@@ -268,6 +268,8 @@ var Viewport = function ( editor ) {
 
 	var drawControls = new THREE.DrawControls( camera, container.dom );
 
+	sceneHelpers.add( drawControls );
+
 	// controls need to be added *after* main logic,
 	// otherwise controls.enabled doesn't work.
 
@@ -293,6 +295,34 @@ var Viewport = function ( editor ) {
 	} );
 
 	signals.editorLookAtRight.add( function () {
+
+		render();
+
+	} );
+
+	signals.editorDraw2dMode.add( function () {
+
+		if ( drawControls.enabled ) {
+
+			signals.showGridChanged.dispatch( true ); // TODO: 动态获取
+
+			drawControls.setDrawMode( false );
+
+			controls.enabled = true;
+			drawControls.enabled = false;
+			container.dom.style.cursor = '';
+
+		} else {
+
+			signals.showGridChanged.dispatch( false );
+
+			drawControls.setDrawMode( true );
+
+			controls.enabled = false;
+			drawControls.enabled = true;
+			container.dom.style.cursor = 'crosshair';
+
+		}
 
 		render();
 
