@@ -1,0 +1,80 @@
+<html>
+	<head>
+		<title>BoxSizeHelper Demo</title>
+		<style>
+			body {
+				margin: 0;
+        background-image: linear-gradient(black, gray );
+			}
+
+			canvas {
+				display: block;
+			}
+
+			.label {
+				padding: 5px;
+				border-radius: 2px;
+				color: #fff;
+			}
+		</style>
+	</head>
+
+	<body>
+		<script src="../build/three.js"></script>
+		<script src="../examples/js/controls/OrbitControls.js"></script>
+		<script src="../examples/js/renderers/CSS2DRenderer.js"></script>
+		<script src="./BoxSizeHelper.js"></script>
+		<script>
+			var scene = new THREE.Scene();
+			var camera = new THREE.PerspectiveCamera(
+				75,
+				window.innerWidth / window.innerHeight,
+				0.1,
+				1000
+			);
+
+			var renderer = new THREE.WebGLRenderer( { antialias: true, alpha: true } );
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			renderer.setPixelRatio( window.devicePixelRatio );
+			document.body.appendChild( renderer.domElement );
+
+			var objectLoader = new THREE.ObjectLoader();
+			objectLoader.load( "scene.json", function ( obj ) {
+
+				scene.add( obj );
+
+				var params = {
+					// size: Vector3( 长, 宽, 高 )
+					size: new THREE.Vector3( 347, 247, 250 ),
+					color: 0xefefef,
+					scalar: 1,
+					unit: 'mm',
+				};
+				var helper = new THREE.BoxSizeHelper( obj, params );
+				scene.add( helper );
+
+			} );
+
+			var labelRenderer = new THREE.CSS2DRenderer();
+			labelRenderer.setSize( window.innerWidth, window.innerHeight );
+			labelRenderer.domElement.style.position = 'absolute';
+			labelRenderer.domElement.style.top = '0px';
+			document.body.appendChild( labelRenderer.domElement );
+			var labelControls = new THREE.OrbitControls( camera, labelRenderer.domElement );
+
+			camera.position.z = 50;
+
+			var animate = function () {
+
+				requestAnimationFrame( animate );
+
+				renderer.render( scene, camera );
+
+				labelRenderer.render( scene, camera );
+
+			};
+
+			animate();
+		</script>
+	</body>
+</html>
