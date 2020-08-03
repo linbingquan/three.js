@@ -1582,28 +1582,42 @@ TransformControlsGizmo.prototype = Object.assign( Object.create( Object3D.protot
 } );
 
 
-var TransformControlsPlane = function () {
+class TransformControlsPlane extends Mesh {
 
-	'use strict';
+	constructor() {
 
-	Mesh.call( this,
-		new PlaneBufferGeometry( 100000, 100000, 2, 2 ),
-		new MeshBasicMaterial( { visible: false, wireframe: true, side: DoubleSide, transparent: true, opacity: 0.1, toneMapped: false } )
-	);
+		super(
+			new PlaneBufferGeometry( 100000, 100000, 2, 2 ),
+			new MeshBasicMaterial( { visible: false, wireframe: true, side: DoubleSide, transparent: true, opacity: 0.1, toneMapped: false } )
+		);
 
-	this.type = 'TransformControlsPlane';
+		this.type = 'TransformControlsPlane';
 
-	var unitX = new Vector3( 1, 0, 0 );
-	var unitY = new Vector3( 0, 1, 0 );
-	var unitZ = new Vector3( 0, 0, 1 );
+		this.unitX = new Vector3( 1, 0, 0 );
+		this.unitY = new Vector3( 0, 1, 0 );
+		this.unitZ = new Vector3( 0, 0, 1 );
 
-	var tempVector = new Vector3();
-	var dirVector = new Vector3();
-	var alignVector = new Vector3();
-	var tempMatrix = new Matrix4();
-	var identityQuaternion = new Quaternion();
+		this.tempVector = new Vector3();
+		this.dirVector = new Vector3();
+		this.alignVector = new Vector3();
+		this.tempMatrix = new Matrix4();
+		this.identityQuaternion = new Quaternion();
 
-	this.updateMatrixWorld = function () {
+		this.isTransformControlsPlane = true;
+
+	}
+
+	updateMatrixWorld() {
+
+		var unitX = this.unitX;
+		var unitY = this.unitY;
+		var unitZ = this.unitZ;
+
+		var tempVector = this.tempVector;
+		var dirVector = this.dirVector;
+		var alignVector = this.alignVector;
+		var tempMatrix = this.tempMatrix;
+		var identityQuaternion = this.identityQuaternion;
 
 		var space = this.space;
 
@@ -1677,16 +1691,8 @@ var TransformControlsPlane = function () {
 
 		Object3D.prototype.updateMatrixWorld.call( this );
 
-	};
+	}
 
-};
-
-TransformControlsPlane.prototype = Object.assign( Object.create( Mesh.prototype ), {
-
-	constructor: TransformControlsPlane,
-
-	isTransformControlsPlane: true
-
-} );
+}
 
 export { TransformControls, TransformControlsGizmo, TransformControlsPlane };
