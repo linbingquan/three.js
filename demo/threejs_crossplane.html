@@ -1,0 +1,132 @@
+<html>
+
+<head>
+	<title>threejs crossplane</title>
+	<style>
+		body {
+			margin: 0;
+		}
+
+		canvas {
+			display: block;
+		}
+	</style>
+</head>
+
+<body>
+	<script type="module">
+		import * as THREE from '../build/three.module.js';
+		import { OrbitControls } from '../examples/jsm/controls/OrbitControls.js';
+
+		const width = window.innerWidth;
+		const height = window.innerHeight;
+		const scene = new THREE.Scene();
+		const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 10000);
+
+		camera.lookAt(new THREE.Vector3(0, 0, 0));
+		scene.add(camera);
+
+		const renderer = new THREE.WebGLRenderer({ alpha: true });
+		renderer.setPixelRatio(window.devicePixelRatio);
+		renderer.setSize(window.innerWidth, window.innerHeight);
+		document.body.appendChild(renderer.domElement);
+
+		const control = new OrbitControls(camera, renderer.domElement);
+		const helper = new THREE.AxesHelper(10);
+
+		scene.add(helper);
+		camera.position.z = 500;
+
+		CrossPlane(scene); // 横竖交叉平面
+
+		const animate = function () {
+
+			requestAnimationFrame(animate);
+
+			renderer.render(scene, camera);
+
+		};
+
+		animate();
+
+		function CrossPlane(scene, planeWidth = 800, lineOffset = 20) {
+
+			const linesWidth = planeWidth || 800;
+			const group_vertical = new THREE.Group();
+			const group_horizontal = new THREE.Group();
+			const group_a = new THREE.Group();
+			const group_b = new THREE.Group();
+			const material = new THREE.LineBasicMaterial({
+				color: 0xcbc4be
+			});
+
+			for (let index = - linesWidth; index <= linesWidth; index += lineOffset) {
+
+				const geometry = new THREE.BufferGeometry();
+				const bevelLength = linesWidth * Math.sqrt(2);
+				const cutLeftWidth = index >= 0 ? 0 : - index * Math.sqrt(2);
+				const cutRightWidth = index <= 0 ? 0 : - index * Math.sqrt(2);
+				const positions = [];
+				positions.push( - bevelLength / 2 + cutLeftWidth, 0, 0);
+				positions.push( bevelLength / 2 + cutRightWidth, 0, 0);
+				geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+				// geometry.computeBoundingSphere();
+				const line = new THREE.Line(geometry, material);
+				line.position.y = index;
+				line.rotation.z = THREE.Math.degToRad(45);
+				group_a.add(line);
+
+			}
+
+			scene.add(group_a);
+
+			for (let index = - linesWidth; index <= linesWidth; index += lineOffset) {
+
+				const geometry = new THREE.BufferGeometry();
+				const bevelLength = linesWidth * Math.sqrt(2);
+				const cutLeftWidth = index >= 0 ? 0 : index * Math.sqrt(2);
+				const cutRightWidth = index <= 0 ? 0 : index * Math.sqrt(2);
+				const positions = [];
+				positions.push( bevelLength / 2 + cutLeftWidth, 0, 0);
+				positions.push( - bevelLength / 2 + cutRightWidth, 0, 0);
+				geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+				// geometry.computeBoundingSphere();
+				const line = new THREE.Line(geometry, material);
+				line.position.y = index;
+				line.rotation.z = THREE.Math.degToRad(- 45);
+				group_b.add(line);
+
+			}
+
+			scene.add(group_b);
+
+			for (let index = - linesWidth / 2; index <= linesWidth / 2; index += lineOffset) {
+
+				const geometry = new THREE.BufferGeometry();
+				const positions = [];
+				positions.push(- linesWidth / 2, index, 0);
+				positions.push(linesWidth / 2, index, 0);
+				geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+				const line = new THREE.Line(geometry, material);
+				scene.add(line);
+
+			}
+
+			for (let index = - linesWidth / 2; index <= linesWidth / 2; index += lineOffset) {
+
+				const geometry = new THREE.BufferGeometry();
+				const positions = [];
+				positions.push(index, - linesWidth / 2, 0);
+				positions.push(index, linesWidth / 2, 0);
+				geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+				const line = new THREE.Line(geometry, material);
+				scene.add(line);
+
+			}
+
+		}
+
+	</script>
+</body>
+
+</html>

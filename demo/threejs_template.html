@@ -1,0 +1,71 @@
+<html>
+	<head>
+		<title>threejs template</title>
+		<style>
+			body {
+				margin: 0;
+			}
+
+			canvas {
+				display: block;
+			}
+		</style>
+	</head>
+
+	<body>
+		<script type="module">
+			import * as THREE from '/build/three.module.js';
+			import Stats from '/examples/jsm/libs/stats.module.js';
+			import { OrbitControls } from '/examples/jsm/controls/OrbitControls.js';
+
+			var width = window.innerWidth;
+			var height = window.innerHeight;
+			var scene = new THREE.Scene();
+			var camera = new THREE.PerspectiveCamera( 45, width / height, 0.1, 10000 );
+
+			camera.lookAt( new THREE.Vector3( 0, 0, 0 ) );
+			scene.add( camera );
+
+			var renderer = new THREE.WebGLRenderer( {
+				alpha: true
+			} );
+			renderer.setPixelRatio( window.devicePixelRatio );
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			document.body.appendChild( renderer.domElement );
+
+			var stats = new Stats();
+			document.body.appendChild( stats.dom );
+
+			var control = new OrbitControls( camera, renderer.domElement );
+
+			var helper = new THREE.AxesHelper( 10 );
+			scene.add( helper );
+
+			camera.position.z = 50;
+
+			var light = new THREE.AmbientLight( 0xfefefe );
+			scene.add( light );
+
+			var clock = new THREE.Clock();
+			var animate = function () {
+
+				requestAnimationFrame( animate );
+				renderer.render( scene, camera );
+				stats.update();
+				var delta = clock.getDelta();
+
+			};
+
+			animate();
+
+			window.addEventListener( "resize", onWindowResize, false );
+			function onWindowResize() {
+
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+				renderer.setSize( window.innerWidth, window.innerHeight );
+
+			}
+		</script>
+	</body>
+</html>
