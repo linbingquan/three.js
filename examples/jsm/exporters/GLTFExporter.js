@@ -207,6 +207,9 @@ function stringToArrayBuffer( text ) {
 
 }
 
+/** identity matrix */
+const IDENTITY_MATRIX = [ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 ];
+
 /**
  * Is identity matrix
  *
@@ -215,7 +218,7 @@ function stringToArrayBuffer( text ) {
  */
 function isIdentityMatrix( matrix ) {
 
-	return equalArray( matrix.elements, [ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 ] );
+	return equalArray( matrix.elements, IDENTITY_MATRIX );
 
 }
 

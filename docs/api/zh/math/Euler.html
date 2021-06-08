@@ -101,11 +101,12 @@
 			设置该欧拉变换的角度和旋转顺序 [page:.order order]。
 		</p>
 
-		<h3>[method:Euler setFromRotationMatrix]( [param:Matrix4 m], [param:String order])</h3>
+		<h3>[method:Euler setFromRotationMatrix]( [param:Matrix4 m], [param:String order], [param: Boolean update])</h3>
 		<p>
 		[page:Matrix4 m] - [page:Matrix4] 矩阵上面的3x3部分是一个纯旋转矩阵[link:https://en.wikipedia.org/wiki/Rotation_matrix rotation matrix]
 		（也就是不发生缩放）<br />
 		[page:.order order] - (可选参数) 表示旋转顺序的字符串。<br />
+		[page:.update update] - (可选参数) 是否要更新。<br />
 
 		使用基于 [page:.order order] 顺序的纯旋转矩阵来设置当前欧拉角。
 		</p>

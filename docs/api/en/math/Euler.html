@@ -106,11 +106,12 @@
 			Sets the angles of this euler transform and optionally the [page:.order order].
 		</p>
 
-		<h3>[method:Euler setFromRotationMatrix]( [param:Matrix4 m], [param:String order] )</h3>
+		<h3>[method:Euler setFromRotationMatrix]( [param:Matrix4 m], [param:String order], [param:Boolean update] )</h3>
 		<p>
 		[page:Matrix4 m] - a [page:Matrix4] of which the upper 3x3 of matrix is a pure
 		[link:https://en.wikipedia.org/wiki/Rotation_matrix rotation matrix] (i.e. unscaled).<br />
 		[page:.order order] - (optional) a string representing the order that the rotations are applied.<br />
+		[page:.order update] - (optional) a string representing the order that the rotations are applied.<br />
 
 		Sets the angles of this euler transform from a pure rotation matrix based on the orientation
 		specified by order.
