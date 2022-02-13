@@ -1,0 +1,148 @@
+<html>
+
+<head>
+    <title>My first three.js app</title>
+    <style>
+        body {
+            margin: 0;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+	<script type="module">
+		import * as THREE from '../build/three.module.js';
+		import { OrbitControls } from '../examples/jsm/controls/OrbitControls.js';
+
+		var scene = new THREE.Scene();
+		scene.fog = new THREE.Fog( 0x000000, 10, 30 );
+		var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+
+		var renderer = new THREE.WebGLRenderer( {
+			alpha: true
+		} );
+		renderer.setPixelRatio( window.devicePixelRatio );
+		renderer.setSize( window.innerWidth, window.innerHeight );
+		document.body.appendChild( renderer.domElement );
+
+		var control = new OrbitControls( camera, renderer.domElement );
+
+		function getCanvasDom( text ) {
+
+        	var _WIDTH = 1024;
+        	var canvasDom = document.createElement( 'canvas' );
+        	canvasDom.width = _WIDTH;
+        	canvasDom.height = _WIDTH;
+        	var ctx = canvasDom.getContext( '2d' );
+        	ctx.strokeStyle = '#ffffff';
+
+        	ctx.fillStyle = '#ffffff';
+        	ctx.arc( _WIDTH / 2, _WIDTH / 2, _WIDTH / 2, 0, 2 * Math.PI, true );
+        	ctx.fill();
+        	ctx.restore();
+
+        	ctx.font = _WIDTH / 5 + 'px Arial';
+        	// 创建渐变
+        	var gradient = ctx.createLinearGradient( 0, 0, 0, _WIDTH );
+        	gradient.addColorStop( '0', '#2196f3' );
+        	gradient.addColorStop( '0.5', '#1976d2' );
+        	gradient.addColorStop( '1.0', '#0d47a1' );
+        	// 用渐变填色
+        	ctx.fillStyle = gradient;
+        	// ctx.fillStyle = '#ff00ff';
+        	var textWidth = ctx.measureText( text ).width;
+        	var textHeight = ctx.measureText( text.substring( 0, 1 ) ).width;
+
+        	ctx.fillText( text, ( _WIDTH - textWidth ) / 2, ( _WIDTH + textHeight ) / 2 );
+        	ctx.save();
+
+        	return canvasDom;
+
+}
+
+		function getCircleCanvasDom() {
+
+			var _WIDTH = 1024;
+			var canvasDom = document.createElement( 'canvas' );
+			canvasDom.width = _WIDTH;
+			canvasDom.height = _WIDTH;
+			var ctx = canvasDom.getContext( '2d' );
+			ctx.strokeStyle = '#ffffff';
+
+			ctx.fillStyle = '#ff0000';
+			ctx.arc( _WIDTH / 2, _WIDTH / 2, _WIDTH / 2, 0, 2 * Math.PI, true );
+			ctx.fill();
+
+			return canvasDom;
+
+		}
+
+		var group = new THREE.Group();
+		var radius = 5;
+		var spriteList = {};
+		var userList = {
+			0: {
+				id: 0,
+				name: '0'
+			},
+		};
+		for ( let index = 0; index < 100; index ++ ) {
+
+        	// 初始化用户
+        	userList[ index ] = {
+        		id: index,
+        		name: index + '',
+        	};
+
+        	var canvasTexture = new THREE.CanvasTexture( getCanvasDom( userList[ index ].name ) );
+        	// var texture = new THREE.TextureLoader().load(getCanvasDom().toDataURL('image/png'));
+        	var material = new THREE.SpriteMaterial( {
+        		color: 0xf8f8f8,
+        		map: canvasTexture,
+        		premultipliedAlpha: true,
+        		// fog: true,
+        	} );
+        	var _material = material.clone();
+        	var sprite = new THREE.Sprite( _material );
+
+        	sprite.position.set( THREE.Math.randInt( - 5, 5 ), THREE.Math.randInt( - 5, 5 ), THREE.Math.randInt( - 5, 5 ) );
+        	sprite.position.normalize();
+        	sprite.position.multiplyScalar( radius );
+
+        	// sprite.position.x = THREE.Math.randInt(-5, 5);
+        	// sprite.position.y = THREE.Math.randInt(-5, 5);
+        	// sprite.position.z = THREE.Math.randInt(-5, 5);
+        	spriteList[ index ] = sprite;
+        	group.add( sprite );
+
+		}
+
+		scene.add( group );
+
+		var helper = new THREE.AxesHelper( 1 );
+		scene.add( helper );
+
+		camera.position.z = 10;
+
+		var animate = function () {
+
+        	requestAnimationFrame( animate );
+
+        	var time = Date.now() / 2000;
+        	group.rotation.x = time * 0.5;
+        	group.rotation.y = time * 0.75;
+        	group.rotation.z = time * 1.0;
+
+        	renderer.render( scene, camera );
+
+		};
+
+		animate();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,155 @@
+<html>
+	<head>
+		<title>threejs shadermaterial</title>
+		<style>
+			body {
+				margin: 0;
+			}
+			canvas {
+				display: block;
+			}
+		</style>
+	</head>
+
+	<body>
+		<script type="module">
+			import * as THREE from '/build/three.module.js';
+			import Stats from '/examples/jsm/libs/stats.module.js';
+			import { OrbitControls } from '/examples/jsm/controls/OrbitControls.js';
+
+			var width = window.innerWidth;
+			var height = window.innerHeight;
+			var scene = new THREE.Scene();
+			var camera = new THREE.PerspectiveCamera( 45, width / height, 0.1, 10000 );
+
+			camera.lookAt( new THREE.Vector3( 0, 0, 0 ) );
+			scene.add( camera );
+
+			var renderer = new THREE.WebGLRenderer( {
+				alpha: true,
+				antialias: true
+			} );
+			renderer.setPixelRatio( window.devicePixelRatio );
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			document.body.appendChild( renderer.domElement );
+
+			var stats = new Stats();
+			document.body.appendChild( stats.dom );
+
+			var control = new OrbitControls( camera, renderer.domElement );
+
+			var helper = new THREE.AxesHelper( 10 );
+			scene.add( helper );
+
+			camera.position.z = 1500;
+
+			// var light = new THREE.AmbientLight( 0xff0000 );
+			// scene.add( light );
+
+			// var geometry = new THREE.IcosahedronGeometry( 10 );
+			var geometry = new THREE.PlaneGeometry( 870, 849, 10, 10 );
+			// var geometry = new THREE.SphereGeometry(500, 32, 32);
+			// var geometry = new THREE.CircleGeometry(500, 32);
+
+
+			const vertexShader = /* glsl */`
+				varying vec2 vUv;
+				void main() {
+					vUv = uv;
+					vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+					gl_Position = projectionMatrix * mvPosition;
+				}
+			`;
+
+			const fragmentShader = /* glsl */`
+				uniform float time;
+				uniform vec2 resolution;
+				varying vec2 vUv;
+
+				uniform sampler2D map;
+
+				// x:角的正弦，y:角的余弦，z:亮度因子
+				
+				void main() {
+
+					vec4 color = texture2D( map, vUv );
+
+					vec2 uv = gl_FragCoord.xy / resolution.xy;
+					float amplitud = 0.03;
+					float frecuencia = 10.0; 
+					float gris = 1.0;
+					float divisor = 4.8 / resolution.y;
+					float grosorInicial = divisor * 0.2;
+
+					vec3 datosPatron[6];
+					datosPatron[0] = vec3(-0.7071, 0.7071, 1.0); // -45°
+					datosPatron[1] = vec3(0.0, 1.0, 0.6); // 0°
+					datosPatron[2] = vec3(0.0, 1.0, 0.5); // 0°
+					datosPatron[3] = vec3(1.0, 0.0, 0.4); // 90°
+					datosPatron[4] = vec3(1.0, 0.0, 0.3); // 90°
+					datosPatron[5] = vec3(0.0, 1.0, 0.2); // 0°
+
+					for (int i = 0; i < 6; i++) {
+						float sinv = datosPatron[i].x;
+						float cosv = datosPatron[i].y;
+
+						// 对 uv 坐标进行旋转
+						vec2 rotuv = vec2(uv.x * cosv - uv.y * sinv, uv.x * sinv + uv.y * cosv);
+
+						// 增加对比度
+						float grosor = grosorInicial * float(i + 1);
+						// 构造不同方向的 木刻纹
+						float dist = mod(rotuv.y - sin(rotuv.x * frecuencia) * amplitud, divisor); 
+
+						// 灰度
+						float lum = dot(vec3(.3, .4, .3), color.rgb);
+						// 当灰度小于亮度分级，将各个亮度分级的 “木刻纹” 进行融合
+						if (lum < 0.82 - .12 * float(i))  {
+							// 增加对比
+							float k = datosPatron[i].z;
+							float x = (grosor - dist) / grosor;
+							float fx = abs(x / k);
+							gris = min(gris, fx);
+						}
+					}
+        			gl_FragColor = vec4(gris, gris, gris, 1.0);
+				}
+			`;
+
+			var material = new THREE.ShaderMaterial( {
+				uniforms: {
+					map: { value: new THREE.TextureLoader().load( 'test.png' ) },
+					time: { value: 1.0 },
+					resolution: { value: new THREE.Vector2( 870, 849 ) }
+				},
+				vertexShader: vertexShader,
+				fragmentShader: fragmentShader
+			} );
+			var mesh = new THREE.Mesh( geometry, material );
+			scene.add( mesh );
+
+			var clock = new THREE.Clock();
+			var animate = function () {
+
+				requestAnimationFrame( animate );
+				renderer.render( scene, camera );
+				stats.update();
+
+				var delta = clock.getDelta();
+				material.uniforms.time.value += delta * 5;
+
+			};
+
+			animate();
+
+			window.addEventListener( 'resize', onWindowResize, false );
+			function onWindowResize() {
+
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+				renderer.setSize( window.innerWidth, window.innerHeight );
+
+			}
+		</script>
+	</body>
+</html>

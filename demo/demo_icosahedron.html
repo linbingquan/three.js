@@ -1,0 +1,83 @@
+<html>
+    <head>
+        <title>demo icosahedron</title>
+        <style>
+            body { margin: 0; background: linear-gradient(to bottom, #BD9779 0%, #A6CDFB 100%); }
+            canvas { display: block; }
+        </style>
+        <!-- From: http://wow.techbrood.com/fiddle/28076 -->
+    </head>
+    <body>
+        <script type="module">
+            import * as THREE from '../build/three.module.js';
+            import { OrbitControls } from '../examples/jsm/controls/OrbitControls.js';
+
+            var scene = new THREE.Scene();
+            scene.fog = new THREE.Fog( 0xA6CDFB, 1, 20 );
+            var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+
+            var renderer = new THREE.WebGLRenderer( {
+            	antialias: true,
+            	alpha: true
+            } );
+            renderer.setSize( window.innerWidth, window.innerHeight );
+            renderer.setPixelRatio( window.devicePixelRatio );
+            document.body.appendChild( renderer.domElement );
+
+            var controls = new OrbitControls( camera, renderer.domElement );
+
+            var geometry = new THREE.IcosahedronBufferGeometry( 6, 2 );
+            var materialBones = new THREE.MeshPhongMaterial( {
+            	color: 0xBD9779,
+            	wireframe: true,
+            } );
+            var mesh = new THREE.Mesh( geometry, materialBones );
+            var boneObj = mesh;
+            mesh.position.y = - 5;
+            scene.add( mesh );
+            
+            var material = new THREE.MeshPhongMaterial( {
+            	color: 0xBD9779,
+            	flatShading: THREE.FlatShading
+            } );
+            var mesh = new THREE.Mesh( geometry, material );
+            var meshObj = mesh;
+            mesh.scale.x = mesh.scale.y = mesh.scale.z = 0.85;
+            mesh.position.y = - 5;
+            scene.add( mesh );
+
+            // lights
+            var ambientLight = new THREE.AmbientLight( 0xBD9779 );
+            scene.add( ambientLight );
+
+            var directionalLight = new THREE.DirectionalLight( 0xffffff );
+            directionalLight.position.set( 1, 1, 1 ).normalize();
+            scene.add( directionalLight );
+
+            camera.position.z = 5;
+
+            var animate = function () {
+
+            	requestAnimationFrame( animate );
+
+            	boneObj.rotation.z -= 0.001;
+            	meshObj.rotation.z += 0.001;
+
+            	renderer.render( scene, camera );
+
+            };
+
+            animate();
+
+            window.addEventListener( 'resize', onWindowResize, false );
+
+            function onWindowResize() {
+
+            	camera.aspect = window.innerWidth / window.innerHeight;
+            	camera.updateProjectionMatrix();
+            	renderer.setSize( window.innerWidth, window.innerHeight );
+
+            }
+        </script>
+    </body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+</head>
+<body>
+	<script>
+function makeLabelCanvas( name, size = 64 ) {
+
+	const borderSize = 2;
+	const canvas = document.createElement( 'canvas' );
+	const ctx = canvas.getContext( '2d' );
+	const font = `${size}px 'Microsoft Yahei', 'PingFang SC', 'Avenir', 'Segoe UI', 'Hiragino Sans GB', STHeiti, 'Microsoft Sans Serif', 'WenQuanYi Micro Hei', sans-serif`;
+	ctx.font = font;
+	const textWidth = ctx.measureText( name ).width;
+
+	const doubleBorderSize = borderSize * 2;
+	const baseSize = textWidth + doubleBorderSize;
+	const width = baseSize;
+	const height = width;
+	ctx.canvas.width = width;
+	ctx.canvas.height = height;
+
+	// need to set font again after resizing canvas
+	ctx.font = font;
+	ctx.textBaseline = 'middle';
+	ctx.textAlign = 'center';
+
+	ctx.fillStyle = 'rgba( 0, 0, 0, 0.5 )';
+	ctx.fillRect( 0, width / 4, width, height / 2 );
+	ctx.translate( width / 2, height / 2 );
+	ctx.fillStyle = 'white';
+	ctx.fillText( name, 0, 0 );
+
+	return canvas;
+
+}
+
+document.body.appendChild( makeLabelCanvas( 'Hello World' ) );
+document.body.appendChild( makeLabelCanvas( 'Distance: 1234.1234' ) );
+
+
+	</script>
+</body>
+</html>
