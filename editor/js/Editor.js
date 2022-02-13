@@ -5,6 +5,7 @@ import { Loader } from './Loader.js';
 import { History as _History } from './History.js';
 import { Strings } from './Strings.js';
 import { Storage as _Storage } from './Storage.js';
+import { Plugins } from './plugins/Plugins.js';
 
 var _DEFAULT_CAMERA = new THREE.PerspectiveCamera( 50, 1, 0.01, 1000 );
 _DEFAULT_CAMERA.name = 'Camera';
@@ -115,12 +116,15 @@ function Editor() {
 	this.mixer = new THREE.AnimationMixer( this.scene );
 
 	this.selected = null;
+	this.disabledSelected = false;
 	this.helpers = {};
 
 	this.cameras = {};
 	this.viewportCamera = this.camera;
 
 	this.addCamera( this.camera );
+
+	this.plugins = new Plugins();
 
 }
 
@@ -536,6 +540,8 @@ Editor.prototype = {
 	//
 
 	select: function ( object ) {
+
+		if ( this.disabledSelected ) return;
 
 		if ( this.selected === object ) return;
 

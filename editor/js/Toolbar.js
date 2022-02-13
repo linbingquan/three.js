@@ -50,6 +50,20 @@ function Toolbar( editor ) {
 	} );
 	container.add( scale );
 
+	const text = document.createElement( 'div' );
+	text.innerText = '测量';
+
+	const measure = new UIButton();
+	measure.dom.appendChild( text );
+	measure.onClick( function () {
+
+		console.log( 'measure' );
+		window.plugins.linePlugin.disabled = false;
+		// signals.transformModeChanged.dispatch( 'scale' );
+
+	} );
+	container.add( measure );
+
 	const local = new UICheckbox( false );
 	local.dom.title = strings.getKey( 'toolbar/local' );
 	local.onChange( function () {

@@ -181,6 +181,7 @@ function Viewport( editor ) {
 	}
 
 	const onDownPosition = new THREE.Vector2();
+	const onMovePosition = new THREE.Vector2();
 	const onUpPosition = new THREE.Vector2();
 	const onDoubleClickPosition = new THREE.Vector2();
 
@@ -205,23 +206,45 @@ function Viewport( editor ) {
 
 					// helper
 
-					editor.select( object.userData.object );
+					// editor.select( object.userData.object );
+					editor.plugins.dispatch( 'Viewport', 'intersects', object.userData.object );
 
 				} else {
 
-					editor.select( object );
+					// editor.select( object );
+					editor.plugins.dispatch( 'Viewport', 'intersects', intersects );
 
 				}
 
 			} else {
 
-				editor.select( null );
+				// editor.select( null );
+				editor.plugins.dispatch( 'Viewport', 'intersects', null );
 
 			}
 
 			render();
 
 		}
+
+	}
+
+	function onMouseMove( event ) {
+
+		const array = getMousePosition( container.dom, event.clientX, event.clientY );
+		onMovePosition.fromArray( array );
+
+		const intersects = getIntersects( onMovePosition, objects );
+
+		if ( intersects.length > 0 ) {
+
+			const point = intersects[ 0 ].point;
+
+			window.debug.update( point );
+
+		}
+
+		// console.log( 'move:', onMovePosition );
 
 	}
 
@@ -289,6 +312,7 @@ function Viewport( editor ) {
 	}
 
 	container.dom.addEventListener( 'mousedown', onMouseDown );
+	container.dom.addEventListener( 'mousemove', onMouseMove );
 	container.dom.addEventListener( 'touchstart', onTouchStart );
 	container.dom.addEventListener( 'dblclick', onDoubleClick );
 

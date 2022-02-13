@@ -70,6 +70,9 @@
 			import { Menubar } from './js/Menubar.js';
 			import { Resizer } from './js/Resizer.js';
 			import { VRButton } from '../examples/jsm/webxr/VRButton.js';
+			import { Debug } from './js/debug/mod.js';
+			import { LinePlugin } from './js/plugins/LinePlugin.js';
+			import { SelectPlugin } from './js/plugins/SelectPlugin.js';
 
 			window.URL = window.URL || window.webkitURL;
 			window.BlobBuilder = window.BlobBuilder || window.WebKitBlobBuilder || window.MozBlobBuilder;
@@ -108,6 +111,19 @@
 
 			var resizer = new Resizer( editor );
 			document.body.appendChild( resizer.dom );
+
+			const debug = new Debug( editor );
+			window.debug = debug;
+
+			var linePlugin = new LinePlugin( editor );
+			linePlugin.disabled = true;
+			var selectPlugin = new SelectPlugin( editor );
+			// selectPlugin.disabled = true;
+			window.plugins = {};
+			window.plugins.linePlugin = linePlugin;
+
+			editor.plugins.registerPlugin( 'Viewport', selectPlugin, /* options */ );
+			editor.plugins.registerPlugin( 'Viewport', linePlugin );
 
 			//
 
@@ -186,7 +202,7 @@
 				event.preventDefault();
 				event.dataTransfer.dropEffect = 'copy';
 
-			});
+			} );
 
 			document.addEventListener( 'drop', function ( event ) {
 
