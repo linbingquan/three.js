@@ -448,6 +448,26 @@ function MenubarAdd( editor ) {
 	} );
 	lightSubmenu.add( option );
 
+	// Light / RectArea
+
+	option = new UIRow();
+	option.setClass( 'option' );
+	option.setTextContent( strings.getKey( 'menubar/add/light/rectarea' ) );
+	option.onClick( function () {
+
+		const color = 0xffffff;
+		const intensity = 1;
+		const width = 10;
+		const height = 10;
+
+		const light = new THREE.RectAreaLight( color, intensity, width, height );
+		light.name = 'RectAreaLight';
+
+		editor.execute( new AddObjectCommand( editor, light ) );
+
+	} );
+	lightSubmenu.add( option );
+
 	// Camera
 
 	const cameraSubmenuTitle = new UIRow().setTextContent( strings.getKey( 'menubar/add/camera' ) ).addClass( 'option' ).addClass( 'submenu-title' );
