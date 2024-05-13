@@ -49,6 +49,7 @@ function Strings( config ) {
 			'menubar/file/save': 'Save',
 			'menubar/file/open': 'Open',
 			'menubar/file/import': 'Import',
+			'menubar/file/import_images_as_planes': 'Import Images as Planes',
 			'menubar/file/export': 'Export',
 
 			'menubar/edit': 'Edit',
@@ -436,6 +437,7 @@ function Strings( config ) {
 			'menubar/file/save': 'Save',
 			'menubar/file/open': 'Open',
 			'menubar/file/import': 'Importer',
+			'menubar/file/import_images_as_planes': 'Import Images as Planes',
 			'menubar/file/export': 'Exporter',
 
 			'menubar/edit': 'Edition',
@@ -823,6 +825,7 @@ function Strings( config ) {
 			'menubar/file/save': '保存',
 			'menubar/file/open': '打开',
 			'menubar/file/import': '导入',
+			'menubar/file/import_images_as_planes': '导入图像为平面',
 			'menubar/file/export': '导出',
 
 			'menubar/edit': '编辑',
@@ -1210,6 +1213,7 @@ function Strings( config ) {
 			'menubar/file/save': '保存',
 			'menubar/file/open': '開く',
 			'menubar/file/import': 'インポート',
+			'menubar/file/import_images_as_planes': 'Import Images as Planes',
 			'menubar/file/export': 'エクスポート',
 
 			'menubar/edit': '編集',
