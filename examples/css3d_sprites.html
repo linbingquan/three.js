@@ -40,6 +40,7 @@
 			let camera, scene, renderer;
 			let controls;
 
+			const tween = new TWEEN.Group();
 			const particlesTotal = 512;
 			const positions = [];
 			const objects = [];
@@ -173,7 +174,7 @@
 
 					const object = objects[ i ];
 
-					new TWEEN.Tween( object.position )
+					new TWEEN.Tween( object.position, tween )
 						.to( {
 							x: positions[ j ],
 							y: positions[ j + 1 ],
@@ -184,7 +185,7 @@
 
 				}
 
-				new TWEEN.Tween( this )
+				new TWEEN.Tween( this, tween )
 					.to( {}, duration * 3 )
 					.onComplete( transition )
 					.start();
@@ -197,7 +198,7 @@
 
 				requestAnimationFrame( animate );
 
-				TWEEN.update();
+				tween.update();
 				controls.update();
 
 				const time = performance.now();

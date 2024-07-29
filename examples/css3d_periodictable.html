@@ -234,6 +234,7 @@
 
 			const objects = [];
 			const targets = { table: [], sphere: [], helix: [], grid: [] };
+			const tween = new TWEEN.Group();
 
 			init();
 			animate();
@@ -393,26 +394,26 @@
 
 			function transform( targets, duration ) {
 
-				TWEEN.removeAll();
+				tween.removeAll();
 
 				for ( let i = 0; i < objects.length; i ++ ) {
 
 					const object = objects[ i ];
 					const target = targets[ i ];
 
-					new TWEEN.Tween( object.position )
+					new TWEEN.Tween( object.position, tween )
 						.to( { x: target.position.x, y: target.position.y, z: target.position.z }, Math.random() * duration + duration )
 						.easing( TWEEN.Easing.Exponential.InOut )
 						.start();
 
-					new TWEEN.Tween( object.rotation )
+					new TWEEN.Tween( object.rotation, tween )
 						.to( { x: target.rotation.x, y: target.rotation.y, z: target.rotation.z }, Math.random() * duration + duration )
 						.easing( TWEEN.Easing.Exponential.InOut )
 						.start();
 
 				}
 
-				new TWEEN.Tween( this )
+				new TWEEN.Tween( this, tween )
 					.to( {}, duration * 2 )
 					.onUpdate( render )
 					.start();
@@ -434,7 +435,7 @@
 
 				requestAnimationFrame( animate );
 
-				TWEEN.update();
+				tween.update();
 
 				controls.update();
 
