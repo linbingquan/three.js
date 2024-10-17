@@ -47,6 +47,12 @@ const _tempVec1 = new Vector3();
 
 class LDrawConditionalLineMaterial extends ShaderMaterial {
 
+	static get type() {
+
+		return 'LDrawConditionalLineMaterial';
+
+	}
+
 	constructor( parameters ) {
 
 		super( {
@@ -1974,7 +1980,7 @@ class LDrawLoader extends Loader {
 
 	}
 
-	parse( text, onLoad ) {
+	parse( text, onLoad, onError ) {
 
 		this.partsCache
 			.parseModel( text, this.materialLibrary )
@@ -1985,7 +1991,8 @@ class LDrawLoader extends Loader {
 				group.userData.fileName = '';
 				onLoad( group );
 
-			} );
+			} )
+			.catch( onError );
 
 	}
 

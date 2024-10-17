@@ -1,6 +1,6 @@
 import { Clock, Vector3, Quaternion, Matrix4 } from 'three';
 
-const JOLT_PATH = 'https://cdn.jsdelivr.net/npm/jolt-physics@0.20.0/dist/jolt-physics.wasm-compat.js';
+const JOLT_PATH = 'https://cdn.jsdelivr.net/npm/jolt-physics@0.23.0/dist/jolt-physics.wasm-compat.js';
 
 const frameRate = 60;
 
@@ -61,7 +61,7 @@ async function JoltPhysics() {
 
 	if ( Jolt === null ) {
 
-		const { default: initJolt } = await import( JOLT_PATH );
+		const { default: initJolt } = await import( `${JOLT_PATH}` );
 		Jolt = await initJolt();
 
 	}
