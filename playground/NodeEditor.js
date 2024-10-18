@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import * as Nodes from 'three/nodes';
+import * as Nodes from 'three/tsl';
 import { Canvas, CircleMenu, ButtonInput, StringInput, ContextMenu, Tips, Search, Loader, Node, TreeViewNode, TreeViewInput, Element } from 'flow';
 import { FileEditor } from './editors/FileEditor.js';
 import { exportJSON } from './NodeEditorUtils.js';
@@ -58,6 +58,7 @@ export class NodeEditor extends THREE.EventDispatcher {
 		this._initExamplesContext();
 		this._initShortcuts();
 		this._initParams();
+
 	}
 
 	setSize( width, height ) {
@@ -282,7 +283,7 @@ export class NodeEditor extends THREE.EventDispatcher {
 			this.splitscreen = ! this.splitscreen;
 			splitscreenButton.setIcon( this.splitscreen ? 'ti ti-layout-sidebar-right-collapse' : 'ti ti-layout-sidebar-right-expand' );
 
-		});
+		} );
 
 		menuButton.onClick( () => this.nodesContext.open() );
 		examplesButton.onClick( () => this.examplesContext.open() );
@@ -391,45 +392,12 @@ export class NodeEditor extends THREE.EventDispatcher {
 		// EXAMPLES
 		//**************//
 
-		addExamples( 'Universal', [
+		addExamples( 'Basic', [
 			'Teapot',
 			'Matcap',
-			'Fresnel'
+			'Fresnel',
+			'Particles'
 		] );
-
-		if ( this.renderer.isWebGLRenderer ) {
-
-			addExamples( 'WebGL', [
-				'Car'
-			] );
-
-			context.add( new ButtonInput( 'WebGPU Version' ).onClick( () => {
-
-				if ( confirm( 'Are you sure?' ) === true ) {
-
-					window.location.search = '?backend=webgpu';
-
-				}
-
-			} ) );
-
-		} else if ( this.renderer.isWebGPURenderer ) {
-
-			addExamples( 'WebGPU', [
-				'Particle'
-			] );
-
-			context.add( new ButtonInput( 'WebGL Version' ).onClick( () => {
-
-				if ( confirm( 'Are you sure?' ) === true ) {
-
-					window.location.search = '';
-
-				}
-
-			} ) );
-
-		}
 
 		this.examplesContext = context;
 
@@ -474,7 +442,7 @@ export class NodeEditor extends THREE.EventDispatcher {
 
 		const urlParams = new URLSearchParams( window.location.search );
 
-		const example = urlParams.get( 'example' ) || 'universal/teapot';
+		const example = urlParams.get( 'example' ) || 'basic/teapot';
 
 		this.loadURL( `./examples/${example}.json` );
 
