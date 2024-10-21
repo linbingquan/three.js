@@ -8,6 +8,7 @@ import { uniform } from '../core/UniformNode.js';
 import { sub } from '../math/OperatorNode.js';
 import { cameraProjectionMatrix } from './Camera.js';
 import { renderGroup } from '../core/UniformGroupNode.js';
+import { config } from '../../renderers/common/Config.js';
 
 const _objectData = new WeakMap();
 
@@ -50,7 +51,7 @@ class VelocityNode extends TempNode {
 
 		const cameraData = getData( camera );
 
-		if ( cameraData.frameId !== frameId ) {
+		if ( config.isRendering === true || cameraData.frameId !== frameId ) {
 
 			cameraData.frameId = frameId;
 

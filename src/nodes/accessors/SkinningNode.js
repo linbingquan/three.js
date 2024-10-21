@@ -9,6 +9,7 @@ import { positionLocal, positionPrevious } from './Position.js';
 import { tangentLocal } from './Tangent.js';
 import { uniform } from '../core/UniformNode.js';
 import { buffer } from './BufferNode.js';
+import { config } from '../../renderers/common/Config.js';
 
 const _frameId = new WeakMap();
 
@@ -173,7 +174,7 @@ class SkinningNode extends Node {
 		const object = this.useReference ? frame.object : this.skinnedMesh;
 		const skeleton = object.skeleton;
 
-		if ( _frameId.get( skeleton ) === frame.frameId ) return;
+		if ( config.isRendering === false || _frameId.get( skeleton ) === frame.frameId ) return;
 
 		_frameId.set( skeleton, frame.frameId );
 

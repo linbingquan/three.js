@@ -26,6 +26,7 @@ import { Vector2 } from '../../math/Vector2.js';
 import { Vector4 } from '../../math/Vector4.js';
 import { RenderTarget } from '../../core/RenderTarget.js';
 import { DoubleSide, BackSide, FrontSide, SRGBColorSpace, NoToneMapping, LinearFilter, LinearSRGBColorSpace, HalfFloatType, RGBAFormat, PCFShadowMap } from '../../constants.js';
+import { config } from './Config.js';
 
 const _scene = /*@__PURE__*/ new Scene();
 const _drawingBufferSize = /*@__PURE__*/ new Vector2();
@@ -233,7 +234,7 @@ class Renderer {
 			}
 
 			this._nodes = new Nodes( this, backend );
-			this._animation = new Animation( this._nodes, this.info );
+			this._animation = new Animation();
 			this._attributes = new Attributes( backend );
 			this._background = new Background( this, this._nodes );
 			this._geometries = new Geometries( this._attributes, this.info );
@@ -552,6 +553,14 @@ class Renderer {
 
 	_renderScene( scene, camera, useFrameBufferTarget = true ) {
 
+		config.isRendering = true;
+
+		if ( this.info.autoReset === true ) this.info.reset();
+
+		this._nodes.nodeFrame.update();
+
+		this.info.frame = this._nodes.nodeFrame.frameId;
+
 		const frameBufferTarget = useFrameBufferTarget ? this._getFrameBufferTarget() : null;
 
 		// preserve render tree
@@ -773,6 +782,8 @@ class Renderer {
 
 		//
 
+		config.isRendering = false;
+
 		return renderContext;
 
 	}
@@ -799,7 +810,9 @@ class Renderer {
 
 		if ( this._initialized === false ) await this.init();
 
-		this._animation.setAnimationLoop( callback );
+		const animation = this._animation;
+		animation.setAnimationLoop( callback );
+		( callback === null ) ? animation.stop() : animation.start();
 
 	}
 

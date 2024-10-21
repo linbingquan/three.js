@@ -1,3 +1,4 @@
+import { config } from '../../renderers/common/Config.js';
 import { NodeUpdateType } from './constants.js';
 
 class NodeFrame {
@@ -52,7 +53,7 @@ class NodeFrame {
 
 			const { frameMap } = this._getMaps( this.updateBeforeMap, reference );
 
-			if ( frameMap.get( reference ) !== this.frameId ) {
+			if ( config.isRendering === true || frameMap.get( reference ) !== this.frameId ) {
 
 				if ( node.updateBefore( this ) !== false ) {
 
@@ -66,7 +67,7 @@ class NodeFrame {
 
 			const { renderMap } = this._getMaps( this.updateBeforeMap, reference );
 
-			if ( renderMap.get( reference ) !== this.renderId ) {
+			if ( config.isRendering === true || renderMap.get( reference ) !== this.renderId ) {
 
 				if ( node.updateBefore( this ) !== false ) {
 
@@ -93,7 +94,7 @@ class NodeFrame {
 
 			const { frameMap } = this._getMaps( this.updateAfterMap, reference );
 
-			if ( frameMap.get( reference ) !== this.frameId ) {
+			if ( config.isRendering === true || frameMap.get( reference ) !== this.frameId ) {
 
 				if ( node.updateAfter( this ) !== false ) {
 
@@ -107,7 +108,7 @@ class NodeFrame {
 
 			const { renderMap } = this._getMaps( this.updateAfterMap, reference );
 
-			if ( renderMap.get( reference ) !== this.renderId ) {
+			if ( config.isRendering === true || renderMap.get( reference ) !== this.renderId ) {
 
 				if ( node.updateAfter( this ) !== false ) {
 
@@ -168,7 +169,7 @@ class NodeFrame {
 
 	update() {
 
-		this.frameId ++;
+		// this.frameId ++;
 
 		if ( this.lastTime === undefined ) this.lastTime = performance.now();
 

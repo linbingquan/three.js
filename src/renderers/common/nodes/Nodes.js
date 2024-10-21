@@ -7,6 +7,7 @@ import { objectGroup, renderGroup, frameGroup, cubeTexture, texture, rangeFog, d
 
 import { CubeUVReflectionMapping, EquirectangularReflectionMapping, EquirectangularRefractionMapping } from '../../../constants.js';
 import { hashArray } from '../../../nodes/core/NodeUtils.js';
+import { config } from '../../../renderers/common/Config.js';
 
 const outputNodeMap = new WeakMap();
 
@@ -60,7 +61,7 @@ class Nodes extends DataMap {
 			const uniformsGroupData = this.get( nodeUniformsGroup );
 			const frameId = this.nodeFrame.frameId;
 
-			if ( uniformsGroupData.frameId !== frameId ) {
+			if ( config.isRendering === true || uniformsGroupData.frameId !== frameId ) {
 
 				uniformsGroupData.frameId = frameId;
 
