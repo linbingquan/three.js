@@ -16166,6 +16166,7 @@ class BatchedMesh extends Mesh {
 			}
 
 			nextVertexStart += geometryInfo.reservedVertexCount;
+			geometryInfo.start = geometry.index ? geometryInfo.indexStart : geometryInfo.vertexStart;
 
 			// step the next geometry points to the shifted position
 			this._nextIndexStart = geometry.index ? geometryInfo.indexStart + geometryInfo.reservedIndexCount : 0;
@@ -19931,14 +19932,14 @@ class CylinderGeometry extends BufferGeometry {
 
 					// faces
 
-					if ( radiusTop > 0 ) {
+					if ( radiusTop > 0 || y !== 0 ) {
 
 						indices.push( a, b, d );
 						groupCount += 3;
 
 					}
 
-					if ( radiusBottom > 0 ) {
+					if ( radiusBottom > 0 || y !== heightSegments - 1 ) {
 
 						indices.push( b, c, d );
 						groupCount += 3;
@@ -36835,6 +36836,15 @@ class NodeMaterialObserver {
 
 			}
 
+			if ( data.material.transmission > 0 ) {
+
+				const { width, height } = renderObject.context;
+
+				data.bufferWidth = width;
+				data.bufferHeight = height;
+
+			}
+
 			this.renderObjects.set( renderObject, data );
 
 		}
@@ -36962,6 +36972,21 @@ class NodeMaterialObserver {
 			} else if ( value !== mtlValue ) {
 
 				materialData[ property ] = mtlValue;
+
+				return false;
+
+			}
+
+		}
+
+		if ( materialData.transmission > 0 ) {
+
+			const { width, height } = renderObject.context;
+
+			if ( renderObjectData.bufferWidth !== width || renderObjectData.bufferHeight !== height ) {
+
+				renderObjectData.bufferWidth = width;
+				renderObjectData.bufferHeight = height;
 
 				return false;
 
@@ -44103,6 +44128,10 @@ class BatchNode extends Node {
 
 const batch = /*@__PURE__*/ nodeProxy( BatchNode );
 
+const config = {
+	isRendering: false,
+};
+
 const _frameId = new WeakMap();
 
 class SkinningNode extends Node {
@@ -44266,7 +44295,7 @@ class SkinningNode extends Node {
 		const object = this.useReference ? frame.object : this.skinnedMesh;
 		const skeleton = object.skeleton;
 
-		if ( _frameId.get( skeleton ) === frame.frameId ) return;
+		if ( config.isRendering === false || _frameId.get( skeleton ) === frame.frameId ) return;
 
 		_frameId.set( skeleton, frame.frameId );
 
@@ -50108,41 +50137,44 @@ class VolumeNodeMaterial extends NodeMaterial {
 
 class Animation {
 
-	constructor( nodes, info ) {
+	constructor() {
 
-		this.nodes = nodes;
-		this.info = info;
-
+		this.isAnimating = false;
 		this.animationLoop = null;
 		this.requestId = null;
 
-		this._init();
+	}
+
+	onAnimationFrame( time, frame ) {
+
+		this.animationLoop( time, frame );
+
+		this.requestId = self.requestAnimationFrame( this.onAnimationFrame.bind( this ) );
 
 	}
 
-	_init() {
+	start() {
 
-		const update = ( time, frame ) => {
+		if ( this.isAnimating === true ) return;
+		if ( this.animationLoop === null ) return;
 
-			this.requestId = self.requestAnimationFrame( update );
+		this.requestId = self.requestAnimationFrame( this.onAnimationFrame.bind( this ) );
 
-			if ( this.info.autoReset === true ) this.info.reset();
+		this.isAnimating = true;
 
-			this.nodes.nodeFrame.update();
+	}
 
-			this.info.frame = this.nodes.nodeFrame.frameId;
+	stop() {
 
-			if ( this.animationLoop !== null ) this.animationLoop( time, frame );
+		self.cancelAnimationFrame( this.requestId );
 
-		};
-
-		update();
+		this.isAnimating = false;
 
 	}
 
 	dispose() {
 
-		self.cancelAnimationFrame( this.requestId );
+		this.stop();
 		this.requestId = null;
 
 	}
@@ -52063,6 +52095,14 @@ function reversePainterSortStable( a, b ) {
 
 }
 
+function needsDoublePass( material ) {
+
+	const hasTransmission = material.transmission > 0 || material.transmissionNode;
+
+	return hasTransmission && material.side === DoubleSide && material.forceSinglePass === false;
+
+}
+
 class RenderList {
 
 	constructor( lighting, scene, camera ) {
@@ -52071,6 +52111,7 @@ class RenderList {
 		this.renderItemsIndex = 0;
 
 		this.opaque = [];
+		this.transparentDoublePass = [];
 		this.transparent = [];
 		this.bundles = [];
 
@@ -52089,6 +52130,7 @@ class RenderList {
 		this.renderItemsIndex = 0;
 
 		this.opaque.length = 0;
+		this.transparentDoublePass.length = 0;
 		this.transparent.length = 0;
 		this.bundles.length = 0;
 
@@ -52144,7 +52186,17 @@ class RenderList {
 
 		if ( object.occlusionTest === true ) this.occlusionQueryCount ++;
 
-		( material.transparent === true || material.transmission > 0 ? this.transparent : this.opaque ).push( renderItem );
+		if ( material.transparent === true || material.transmission > 0 ) {
+
+			if ( needsDoublePass( material ) ) this.transparentDoublePass.push( renderItem );
+
+			this.transparent.push( renderItem );
+
+		} else {
+
+			this.opaque.push( renderItem );
+
+		}
 
 	}
 
@@ -52152,7 +52204,17 @@ class RenderList {
 
 		const renderItem = this.getNextRenderItem( object, geometry, material, groupOrder, z, group );
 
-		( material.transparent === true ? this.transparent : this.opaque ).unshift( renderItem );
+		if ( material.transparent === true || material.transmission > 0 ) {
+
+			if ( needsDoublePass( material ) ) this.transparentDoublePass.unshift( renderItem );
+
+			this.transparent.unshift( renderItem );
+
+		} else {
+
+			this.opaque.unshift( renderItem );
+
+		}
 
 	}
 
@@ -52171,6 +52233,7 @@ class RenderList {
 	sort( customOpaqueSort, customTransparentSort ) {
 
 		if ( this.opaque.length > 1 ) this.opaque.sort( customOpaqueSort || painterSortStable );
+		if ( this.transparentDoublePass.length > 1 ) this.transparentDoublePass.sort( customTransparentSort || reversePainterSortStable );
 		if ( this.transparent.length > 1 ) this.transparent.sort( customTransparentSort || reversePainterSortStable );
 
 	}
@@ -54847,7 +54910,7 @@ class VelocityNode extends TempNode {
 
 		const cameraData = getData( camera );
 
-		if ( cameraData.frameId !== frameId ) {
+		if ( config.isRendering === true || cameraData.frameId !== frameId ) {
 
 			cameraData.frameId = frameId;
 
@@ -55356,8 +55419,9 @@ class PassNode extends TempNode {
 
 		if ( textureNode === undefined ) {
 
-			this._textureNodes[ name ] = textureNode = nodeObject( new PassMultipleTextureNode( this, name ) );
-			this._textureNodes[ name ].updateTexture();
+			textureNode = nodeObject( new PassMultipleTextureNode( this, name ) );
+			textureNode.updateTexture();
+			this._textureNodes[ name ] = textureNode;
 
 		}
 
@@ -55373,8 +55437,9 @@ class PassNode extends TempNode {
 
 			if ( this._textureNodes[ name ] === undefined ) this.getTextureNode( name );
 
-			this._previousTextureNodes[ name ] = textureNode = nodeObject( new PassMultipleTextureNode( this, name, true ) );
-			this._previousTextureNodes[ name ].updateTexture();
+			textureNode = nodeObject( new PassMultipleTextureNode( this, name, true ) );
+			textureNode.updateTexture();
+			this._previousTextureNodes[ name ] = textureNode;
 
 		}
 
@@ -62544,7 +62609,7 @@ class NodeFrame {
 
 			const { frameMap } = this._getMaps( this.updateBeforeMap, reference );
 
-			if ( frameMap.get( reference ) !== this.frameId ) {
+			if ( config.isRendering === true || frameMap.get( reference ) !== this.frameId ) {
 
 				if ( node.updateBefore( this ) !== false ) {
 
@@ -62558,7 +62623,7 @@ class NodeFrame {
 
 			const { renderMap } = this._getMaps( this.updateBeforeMap, reference );
 
-			if ( renderMap.get( reference ) !== this.renderId ) {
+			if ( config.isRendering === true || renderMap.get( reference ) !== this.renderId ) {
 
 				if ( node.updateBefore( this ) !== false ) {
 
@@ -62585,7 +62650,7 @@ class NodeFrame {
 
 			const { frameMap } = this._getMaps( this.updateAfterMap, reference );
 
-			if ( frameMap.get( reference ) !== this.frameId ) {
+			if ( config.isRendering === true || frameMap.get( reference ) !== this.frameId ) {
 
 				if ( node.updateAfter( this ) !== false ) {
 
@@ -62599,7 +62664,7 @@ class NodeFrame {
 
 			const { renderMap } = this._getMaps( this.updateAfterMap, reference );
 
-			if ( renderMap.get( reference ) !== this.renderId ) {
+			if ( config.isRendering === true || renderMap.get( reference ) !== this.renderId ) {
 
 				if ( node.updateAfter( this ) !== false ) {
 
@@ -62660,7 +62725,7 @@ class NodeFrame {
 
 	update() {
 
-		this.frameId ++;
+		// this.frameId ++;
 
 		if ( this.lastTime === undefined ) this.lastTime = performance.now();
 
@@ -63276,7 +63341,7 @@ class Nodes extends DataMap {
 			const uniformsGroupData = this.get( nodeUniformsGroup );
 			const frameId = this.nodeFrame.frameId;
 
-			if ( uniformsGroupData.frameId !== frameId ) {
+			if ( config.isRendering === true || uniformsGroupData.frameId !== frameId ) {
 
 				uniformsGroupData.frameId = frameId;
 
@@ -64149,7 +64214,7 @@ class Renderer {
 			}
 
 			this._nodes = new Nodes( this, backend );
-			this._animation = new Animation( this._nodes, this.info );
+			this._animation = new Animation();
 			this._attributes = new Attributes( backend );
 			this._background = new Background( this, this._nodes );
 			this._geometries = new Geometries( this._attributes, this.info );
@@ -64286,7 +64351,7 @@ class Renderer {
 		const lightsNode = renderList.lightsNode;
 
 		if ( this.opaque === true && opaqueObjects.length > 0 ) this._renderObjects( opaqueObjects, camera, sceneRef, lightsNode );
-		if ( this.transparent === true && transparentObjects.length > 0 ) this._renderObjects( transparentObjects, camera, sceneRef, lightsNode );
+		if ( this.transparent === true && transparentObjects.length > 0 ) this._renderTransparents( transparentObjects, camera, sceneRef, lightsNode );
 
 		// restore render tree
 
@@ -64368,7 +64433,7 @@ class Renderer {
 
 			const opaqueObjects = renderList.opaque;
 
-			if ( opaqueObjects.length > 0 ) this._renderObjects( opaqueObjects, camera, sceneRef, lightsNode );
+			if ( this.opaque === true && opaqueObjects.length > 0 ) this._renderObjects( opaqueObjects, camera, sceneRef, lightsNode );
 
 			this._currentRenderBundle = null;
 
@@ -64467,6 +64532,14 @@ class Renderer {
 	}
 
 	_renderScene( scene, camera, useFrameBufferTarget = true ) {
+
+		config.isRendering = true;
+
+		if ( this.info.autoReset === true ) this.info.reset();
+
+		this._nodes.nodeFrame.update();
+
+		this.info.frame = this._nodes.nodeFrame.frameId;
 
 		const frameBufferTarget = useFrameBufferTarget ? this._getFrameBufferTarget() : null;
 
@@ -64644,13 +64717,14 @@ class Renderer {
 		const {
 			bundles,
 			lightsNode,
+			transparentDoublePass: transparentDoublePassObjects,
 			transparent: transparentObjects,
 			opaque: opaqueObjects
 		} = renderList;
 
 		if ( bundles.length > 0 ) this._renderBundles( bundles, sceneRef, lightsNode );
 		if ( this.opaque === true && opaqueObjects.length > 0 ) this._renderObjects( opaqueObjects, camera, sceneRef, lightsNode );
-		if ( this.transparent === true && transparentObjects.length > 0 ) this._renderObjects( transparentObjects, camera, sceneRef, lightsNode );
+		if ( this.transparent === true && transparentObjects.length > 0 ) this._renderTransparents( transparentObjects, transparentDoublePassObjects, camera, sceneRef, lightsNode );
 
 		// finish render pass
 
@@ -64688,6 +64762,8 @@ class Renderer {
 
 		//
 
+		config.isRendering = false;
+
 		return renderContext;
 
 	}
@@ -64714,7 +64790,9 @@ class Renderer {
 
 		if ( this._initialized === false ) await this.init();
 
-		this._animation.setAnimationLoop( callback );
+		const animation = this._animation;
+		animation.setAnimationLoop( callback );
+		( callback === null ) ? animation.stop() : animation.start();
 
 	}
 
@@ -65354,7 +65432,47 @@ class Renderer {
 
 	}
 
-	_renderObjects( renderList, camera, scene, lightsNode ) {
+	_renderTransparents( renderList, doublePassList, camera, scene, lightsNode ) {
+
+		if ( doublePassList.length > 0 ) {
+
+			// render back side
+
+			for ( const { material } of doublePassList ) {
+
+				material.side = BackSide;
+
+			}
+
+			this._renderObjects( doublePassList, camera, scene, lightsNode, 'backSide' );
+
+			// render front side
+
+			for ( const { material } of doublePassList ) {
+
+				material.side = FrontSide;
+
+			}
+
+			this._renderObjects( renderList, camera, scene, lightsNode );
+
+			// restore
+
+			for ( const { material } of doublePassList ) {
+
+				material.side = DoubleSide;
+
+			}
+
+		} else {
+
+			this._renderObjects( renderList, camera, scene, lightsNode );
+
+		}
+
+	}
+
+	_renderObjects( renderList, camera, scene, lightsNode, passId = null ) {
 
 		// process renderable objects
 
@@ -65388,7 +65506,7 @@ class Renderer {
 
 						this.backend.updateViewport( this._currentRenderContext );
 
-						this._currentRenderObjectFunction( object, scene, camera2, geometry, material, group, lightsNode );
+						this._currentRenderObjectFunction( object, scene, camera2, geometry, material, group, lightsNode, passId );
 
 					}
 
@@ -65396,7 +65514,7 @@ class Renderer {
 
 			} else {
 
-				this._currentRenderObjectFunction( object, scene, camera, geometry, material, group, lightsNode );
+				this._currentRenderObjectFunction( object, scene, camera, geometry, material, group, lightsNode, passId );
 
 			}
 
@@ -65404,7 +65522,7 @@ class Renderer {
 
 	}
 
-	renderObject( object, scene, camera, geometry, material, group, lightsNode ) {
+	renderObject( object, scene, camera, geometry, material, group, lightsNode, passId = null ) {
 
 		let overridePositionNode;
 		let overrideFragmentNode;
@@ -65486,13 +65604,13 @@ class Renderer {
 			this._handleObjectFunction( object, material, scene, camera, lightsNode, group, 'backSide' ); // create backSide pass id
 
 			material.side = FrontSide;
-			this._handleObjectFunction( object, material, scene, camera, lightsNode, group ); // use default pass id
+			this._handleObjectFunction( object, material, scene, camera, lightsNode, group, passId ); // use default pass id
 
 			material.side = DoubleSide;
 
 		} else {
 
-			this._handleObjectFunction( object, material, scene, camera, lightsNode, group );
+			this._handleObjectFunction( object, material, scene, camera, lightsNode, group, passId );
 
 		}
 
@@ -73140,17 +73258,21 @@ const parse = ( source ) => {
 
 			let resolvedType = type;
 
-			if ( resolvedType.startsWith( 'texture' ) ) {
-
-				resolvedType = type.split( '<' )[ 0 ];
-
-			} else if ( resolvedType.startsWith( 'ptr' ) ) {
+			if ( resolvedType.startsWith( 'ptr' ) ) {
 
 				resolvedType = 'pointer';
 
-			}
+			} else {
 
-			resolvedType = wgslTypeLib$1[ resolvedType ] || resolvedType;
+				if ( resolvedType.startsWith( 'texture' ) ) {
+
+					resolvedType = type.split( '<' )[ 0 ];
+
+				}
+
+				resolvedType = wgslTypeLib$1[ resolvedType ];
+
+			}
 
 			inputs.push( new NodeFunctionInput( resolvedType, name ) );
 
